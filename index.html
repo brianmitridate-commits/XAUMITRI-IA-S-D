@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)file:///C:/Users/brian/Downloads/index_3.html -->
+<!-- saved from url=(0045)file:///C:/Users/brian/Downloads/index_4.html -->
 <html lang="fr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -473,50 +473,43 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#f8f9fa;color:#1a
 
 </div>
 <script>
-const SD_SYSTEM=`Tu es un trader senior specialise en Supply & Demand (S&D) / ICT / SMC.
-Tu analyses les charts comme un "Avocat du Diable" : tu ne valides pas facilement, tu CHALLENGES et tu CORRIGES.
-Tu connais parfaitement cette methodologie :
+const SD_SYSTEM=`Tu es un trader senior specialise en Supply & Demand / ICT / SMC. Tu joues le role d'un mentor : rigoureux sur les vraies erreurs, mais qui valide franchement ce qui est correct.
 
-ETAPE 1 BIAIS (Weekly/Daily) :
-- Structure Weekly : HH+HL=BUY / LH+LL=SELL / Ambigue=attendre
-- CHoCH Weekly en CLOTURE = reevaluer tout le biais (meche seule=invalide)
-- Daily doit etre dans le meme sens que Weekly OBLIGATOIRE
-- Discount (<50% du range)=BUY / Premium=SELL
-- Liquidite cible : BSL (uptrend) / SSL (downtrend)
+REGLES DE COMPORTEMENT :
+- IMAGE PEU LISIBLE : signale-le en une phrase, puis base-toi sur la description du trader.
+- CONFIANCE : si le trader affirme avoir vu un CHoCH en corps de bougie, ne le remets pas en doute sauf si la logique globale est incoherente.
+- EQUILIBRE : commence TOUJOURS par valider ce qui est juste avant de corriger. Un trader qui a bien lu 80% du chart doit l'entendre.
+- PRECISION : max 2 points de correction par reponse. Si tu dois choisir, prends la faute la plus grave.
+- VRAIE ERREUR : challenge fermement si une regle absolue est violee (CHoCH en meche, SL mal place, OB mitigue). Sinon, nuance.
 
-ETAPE 2 STRUCTURE (4H/H1) :
-- CHoCH en CLOTURE obligatoire (meche seule=invalide, skip)
-- BOS confirmatoire en CLOTURE + FVG dans le sillage
-- BOS contre-tendance Daily = piege -> skip
+METHODOLOGIE S&D / ICT :
+BIAIS :
+- Structure : HH+HL=uptrend BUY / LH+LL=downtrend SELL
+- CHoCH = cassure du premier creux (BUY) ou sommet (SELL) en CORPS DE BOUGIE en cloture
+- Daily contraire au Weekly = correction normale, pas une inversion — trader avec prudence
+- Discount (<50% range)=BUY / Premium=SELL / BSL=cible uptrend / SSL=cible downtrend
 
-ETAPE 3 OB + INDUCEMENT :
-- OB sur le MEME TF que le BOS/CHoCH createur
-- Conditions : cause BOS/CHoCH en cloture + FVG + non-mitigue
-- Mitigue = CLOTURE dedans (meche seule = PAS mitigue)
-- Type 1 : derniere bougie couleur opposee avant impulsion
-- Type 2 : bougie avec FVG (FVG=TP1 / OB=entree)
-- INDUCEMENT : liquidite entre prix et OB
-- JAMAIS de SL entre prix et inducement (regele absolue)
-- Non swepe -> attendre ou SL sous inducement a 0.5%
+STRUCTURE :
+- CHoCH + BOS en CLOTURE obligatoire (meche seule = toujours invalide)
+- BOS contre-tendance HTF = piege institutionnel -> skip
+- FVG dans le sillage du BOS = conviction institutionnelle
 
-ETAPE 4 ENTREE (M15 ou M5) :
-- CHoCH M15/M5 A L'INTERIEUR de la zone OB en CLOTURE
-- RRR minimum 1:2
+OB + INDUCEMENT :
+- OB sur le MEME TF que le BOS/CHoCH qui l'a cree
+- 3 conditions : cause BOS/CHoCH cloture + FVG + non-mitigue
+- Mitigue = CLOTURE de bougie dedans (meche seule = PAS mitigue)
+- Inducement = liquidite entre prix actuel et OB — JAMAIS le SL entre les deux
 
-SCORING :
-- OB seul = 0.25%
-- +FVG = 0.50%
-- +Inducement swepe = 0.75%
-- +Fibo 61.8-78.6% dans zone = 1.00% (A+)
+ENTREE : CHoCH M15/M5 a l'interieur de l'OB en cloture. RRR min 1:2.
 
-REGLES ABSOLUES (une violation = skip) :
-- JAMAIS SL entre prix et inducement
-- CHoCH en meche = invalide
-- OB mitigue 2x = invalide
-- Score < 0.5% = skip
-- Si tu dois te convaincre -> skip
+SCORING : OB=0.25% / +FVG=0.50% / +Ind.swepe=0.75% / +Fibo 61.8-78.6%=1.00% A+
 
-Reponds en francais. Direct. Max 200 mots. Challenge sans pitie si quelque chose cloche.`;
+FORMAT OBLIGATOIRE :
+✓ CE QUI EST CORRECT : [valide clairement les bons points]
+⚠ A VERIFIER : [max 2 points, seulement si vraiment necessaire]
+? QUESTION : [une seule question si info manquante]
+VERDICT : VALIDE [score] / ATTENTION [raison] / SKIP [raison absolue]
+Max 220 mots. Francais. Direct et juste.`;
 
 let state={apiKey:localStorage.getItem('sd_apikey')||'',currentStep:0,context:{},aiResponses:{},images:{},finalScore:null,finalVerdict:null,entryTf:'M15'};
 let journal=JSON.parse(localStorage.getItem('sd_journal')||'[]');
@@ -600,15 +593,18 @@ document.addEventListener('paste',e=>{
   const items=e.clipboardData?.items;if(!items)return;
   for(const item of items){
     if(item.type.startsWith('image/')){
+      // Coller dans le DERNIER step visible (le plus avance)
+      let targetStep=-1;
       for(let i=1;i<=4;i++){
         const card=document.getElementById('step'+i+'-card');
-        if(card&&card.style.display!=='none'){
-          e.preventDefault();
-          const file=item.getAsFile();
-          if(file)loadImageFile(file,'file'+i,'prev'+i);
-          return;
-        }
+        if(card&&card.style.display!=='none')targetStep=i;
       }
+      if(targetStep>0){
+        e.preventDefault();
+        const file=item.getAsFile();
+        if(file)loadImageFile(file,'file'+targetStep,'prev'+targetStep);
+      }
+      return;
     }
   }
 });
@@ -638,12 +634,12 @@ async function analyzeStep(step){
     const isContext = ctx.dir === 'CONTEXT';
     prompt=isContext
       ? `Analyse de contexte macro — ${ctx.pair} — Date : ${ctx.date}\n\nL'utilisateur analyse ${ctx.pair} pour comprendre le contexte de ses paires principales.\n\nDescription du chart : "${obs}"\n\nANALYSE CONTEXTE MACRO :\n1. Quelle est la structure actuelle (HH+HL ou LH+LL) ?\n2. Quel est le biais directionnel dominant ?\n3. Quels sont les niveaux clés a surveiller ?\n4. Implication pour les paires correlees (ex: DXY fort = EURUSD/GBPUSD baissier, XAUUSD baissier) ?\n5. Conclusion : CONTEXTE HAUSSIER / BAISSIER / NEUTRE + impact sur les autres paires`
-      : `Setup : ${ctx.pair} ${ctx.dir} — Session : ${ctx.session} — Date : ${ctx.date} — Mode : ${ctx.mode}\n\nL'utilisateur dit sur le Weekly : "${obs}"\n\nCHALLENGE ETAPE 1 — BIAIS WEEKLY :\n1. La structure (HH+HL ou LH+LL) est-elle correcte sur ce chart ?\n2. Le prix est-il vraiment en Discount ou Premium ? Calcule le midpoint.\n3. La liquidite cible (BSL/SSL) est-elle correctement identifiee ?\n4. Si tu vois quelque chose d'incorrect, dis-le sans menagement.\n5. Conclusion : BIAIS VALIDE / INVALIDE / AMBIGUE`;
+      : `ETAPE 1 — BIAIS — ${ctx.pair} ${ctx.dir} | ${ctx.session} | ${ctx.date}\n\nLecture du trader : "${obs}"\n\nANALYSE BIAIS :\n- Valide ou corrige la structure (HH+HL ou LH+LL)\n- Confirme ou corrige le positionnement Discount/Premium\n- Valide ou corrige la liquidite cible (BSL/SSL)\n- Si l'image est peu lisible, dis-le et base-toi sur la description\nSi le biais est correct dans sa logique globale, valide-le clairement meme si tu as une nuance.`;
   } else if(step===2){
-    prompt=`Suite — ${ctx.pair} ${ctx.dir}\nBiais Weekly : ${state.aiResponses[1]?.slice(0,200)||'voir etape 1'}\n\nL'utilisateur dit sur le Daily : "${obs}"\n\nCHALLENGE ETAPE 2 — STRUCTURE DAILY :\n1. Le CHoCH decrit est-il une CLOTURE ou une meche ? (meche=invalide)\n2. La structure Daily est-elle dans le meme sens que le Weekly ?\n3. S'il y a CHoCH contraire au Weekly : correction a trader ou inversion ?\n4. Y a-t-il un BOS contre-tendance qui invaliderait le setup ?\n5. Conclusion : STRUCTURE ALIGNEE / CONTRE-TENDANCE / ATTENTION`;
+    prompt=`ETAPE 2 — STRUCTURE DAILY — ${ctx.pair} ${ctx.dir}\nContexte biais : ${state.aiResponses[1]?.slice(0,200)||'voir etape 1'}\n\nLecture du trader : "${obs}"\n\nANALYSE STRUCTURE :\n- Si le trader decrit un CHoCH en corps de bougie, valide-le si la logique est coherente\n- Un CHoCH Daily contraire au Weekly = correction normale, pas une erreur en soi\n- Verifie si le BOS est confirmatoire (cloture + FVG dans le sillage)\n- Un BOS contre-tendance HTF = piege -> signale-le clairement\nValide franchement si la structure est bien lue, meme si tu as une nuance.`;
   } else if(step===3){
     const obTf=document.getElementById('ob-tf').value;const obType=document.getElementById('ob-type').value;
-    prompt=`Suite — ${ctx.pair} ${ctx.dir}\nContext : ${state.aiResponses[2]?.slice(0,150)||'voir etapes'}\nOB sur : ${obTf} — Type : ${obType}\n\nL'utilisateur decrit l'OB : "${obs}"\n\nCHALLENGE ETAPE 3 — OB + INDUCEMENT :\n1. L'OB est-il sur le BON TF (meme que le BOS/CHoCH createur) ?\n2. L'OB a-t-il cause un BOS ou CHoCH en CLOTURE (pas meche) ?\n3. A-t-il laisse un FVG ? Est-il non-mitigue ?\n4. L'inducement est-il correctement identifie entre le prix et l'OB ?\n5. Y a-t-il un risque de SL entre prix et inducement ? (INTERDIT ABSOLU)\n6. SCORE provisoire : OB(0.25)+FVG(+0.25)+Ind.swepe(+0.25)+Fibo(+0.25)=?\n7. Conclusion : OB VALIDE score X% / OB INVALIDE / SKIP`;
+    prompt=`ETAPE 3 — ORDER BLOCK + INDUCEMENT — ${ctx.pair} ${ctx.dir}\nOB TF : ${obTf} | Type : ${obType}\nContexte : ${state.aiResponses[2]?.slice(0,150)||'voir etapes'}\n\nLecture du trader : "${obs}"\n\nANALYSE OB + INDUCEMENT :\n- Verifie les 3 conditions OB (bon TF / cause BOS-CHoCH cloture / non-mitigue)\n- Verifie la presence du FVG et de l'inducement\n- Si les conditions sont remplies, valide le score clairement\n- Corrige fermement SEULEMENT si une regle absolue est violee (mauvais TF, OB mitigue, SL entre prix et inducement)\nSCORE provisoire : calcule en additionnant les elements valides (0.25 a 1.00%).`;
   } else if(step===4){
     const entry=parseFloat(document.getElementById('entry-price').value)||0;
     const sl=parseFloat(document.getElementById('sl-price').value)||0;
