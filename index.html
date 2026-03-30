@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)file:///C:/Users/brian/Downloads/index_4.html -->
+<!-- saved from url=(0045)file:///C:/Users/brian/Downloads/index_5.html -->
 <html lang="fr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -109,7 +109,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#f8f9fa;color:#1a
 @media(max-width:640px){.row2,.row3,.row4{grid-template-columns:1fr 1fr}.stats-grid{grid-template-columns:1fr 1fr}.app{padding:10px}}
 @media(max-width:400px){.row2,.row3,.row4{grid-template-columns:1fr}}
 </style>
-<script src="./index_files/chart.umd.min.js.télécharger"></script></head>
+</head>
 <body>
 <div class="app">
 
@@ -132,6 +132,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#f8f9fa;color:#1a
     <div class="tab-row">
       <button class="tab active" onclick="switchTab(&#39;analyse&#39;,this)">Analyse</button>
       <button class="tab" onclick="switchTab(&#39;journal&#39;,this)">Journal</button>
+      <button class="tab" onclick="switchTab(&#39;watchlist&#39;,this)">Watchlist <span id="wl-badge" style="display:none;background:var(--amber);color:#fff;border-radius:10px;padding:1px 6px;font-size:10px;margin-left:2px">0</span></button>
       <button class="tab" onclick="switchTab(&#39;checklist&#39;,this)">Checklist</button>
       <button onclick="window.location.href=&#39;journal.html&#39;" style="padding:6px 14px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;border:0.5px solid #111;background:#111;color:#fff">📓 Mon Journal</button>
     </div>
@@ -142,7 +143,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#f8f9fa;color:#1a
   <span style="font-size:12px;color:#6b7280;white-space:nowrap">Cle API Anthropic :</span>
   <input type="password" id="apiKey" placeholder="sk-ant-api03-..." autocomplete="off">
   <button class="btn-sm" onclick="saveKey()">Sauvegarder</button>
-  <span class="api-status ok" id="apiStatus">Configuree</span>
+  <span class="api-status no" id="apiStatus">Non configuree</span>
 </div>
 
 <div id="tab-analyse">
@@ -260,7 +261,10 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#f8f9fa;color:#1a
     <label>Ta lecture OB + Inducement</label>
     <textarea id="obs3" placeholder="Ex: OB H1 a 1.3450, a cause un BOS en cloture H1, FVG laisse dans le sillage. Inducement = equal highs a 1.3508 entre prix et OB. Inducement deja swepe donc entree normale. SL sous meche basse + 15pts buffer, pas entre prix et inducement..."></textarea>
   </div>
-  <div class="btn-group"><button class="btn btn-primary" onclick="analyzeStep(3)">L'IA valide l'OB et l'inducement →</button></div>
+  <div class="btn-group">
+    <button class="btn btn-primary" onclick="analyzeStep(3)">L'IA valide l'OB et l'inducement →</button>
+    <button class="btn" style="background:var(--amber-bg);color:var(--amber);border-color:var(--amber-bd)" onclick="saveToWatchlist()">⏸ Mettre en veille — j'attends le prix</button>
+  </div>
   <div id="ai3"></div>
 </div>
 
@@ -375,6 +379,23 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#f8f9fa;color:#1a
   </div>
 </div>
 
+<!-- ═══ WATCHLIST TAB ═══ -->
+<div id="tab-watchlist" style="display:none">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px">
+    <div>
+      <div style="font-size:14px;font-weight:500;color:#111">Setups en attente</div>
+      <div style="font-size:11px;color:#9ca3af;margin-top:2px">Prix pas encore arrive dans ta zone — reprends quand c'est le moment</div>
+    </div>
+    <button class="btn" onclick="clearWatchlist()" style="font-size:11px;color:var(--red);border-color:var(--red-bd)">Tout effacer</button>
+  </div>
+  <div id="watchlist-empty" class="empty" style="display:none">
+    <div style="font-size:32px;margin-bottom:8px">⏸</div>
+    <div style="font-size:13px;font-weight:500;color:#374151;margin-bottom:4px">Aucun setup en attente</div>
+    <div style="font-size:12px;color:#9ca3af">Apres l'etape 3, clique "Mettre en veille" pour sauvegarder un setup</div>
+  </div>
+  <div id="watchlist-list"></div>
+</div>
+
 <!-- ═══ CHECKLIST TAB ═══ -->
 <div id="tab-checklist" style="display:none">
   <div style="display:flex;gap:6px;margin-bottom:14px;align-items:center;flex-wrap:wrap">
@@ -384,7 +405,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#f8f9fa;color:#1a
   </div>
 
   <!-- SWING CHECKLIST -->
-  <div id="cl-swing" style="display: block;">
+  <div id="cl-swing">
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
     <div class="card" style="margin:0">
       <div class="card-title" style="color:var(--blue)">01 — BIAIS WEEKLY / DAILY</div>
@@ -515,6 +536,7 @@ let state={apiKey:localStorage.getItem('sd_apikey')||'',currentStep:0,context:{}
 let journal=JSON.parse(localStorage.getItem('sd_journal')||'[]');
 let journalFilter='all';
 
+updateWatchlistBadge();
 if(state.apiKey){document.getElementById('apiKey').value=state.apiKey;document.getElementById('apiStatus').textContent='Configuree';document.getElementById('apiStatus').className='api-status ok';}
 document.getElementById('ctx-date').value=new Date().toISOString().slice(0,10);
 
@@ -571,14 +593,15 @@ function setTradingMode(mode,btn){
 }
 
 function switchTab(tab,btn){
-  ['analyse','journal','checklist'].forEach(t=>{
+  ['analyse','journal','watchlist','checklist'].forEach(t=>{
     const el=document.getElementById('tab-'+t);
     if(el)el.style.display=t===tab?'block':'none';
   });
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  btn.classList.add('active');
+  if(btn)btn.classList.add('active');
   if(tab==='journal'){renderJournal();renderWRChart();}
   if(tab==='checklist')renderChecklist();
+  if(tab==='watchlist')renderWatchlist();
 }
 
 function selectFav(pair,el){document.querySelectorAll('#favChips .fav-chip').forEach(c=>c.classList.remove('selected'));el.classList.add('selected');document.getElementById('ctx-pair').value=pair;}
@@ -814,6 +837,172 @@ async function reviewWithAI(){
   try{const resp=await callClaude(prompt,null);document.getElementById('pt-ai-result').innerHTML='<div class="ai-response">'+resp+'</div>';journal[idx].postReview=resp;localStorage.setItem('sd_journal',JSON.stringify(journal));}
   catch(e){document.getElementById('pt-ai-result').innerHTML='<div style="color:var(--red);font-size:12px">Erreur : '+e.message+'</div>';}
   btn.textContent='Analyser avec l\'IA';btn.disabled=false;
+}
+
+// ═══ WATCHLIST ═══
+let watchlist = JSON.parse(localStorage.getItem('sd_watchlist')||'[]');
+
+function saveToWatchlist(){
+  const pair=state.context.pair;
+  if(!pair){alert('Pas de setup en cours.');return;}
+  const obs3=document.getElementById('obs3')?.value||'';
+  const ai3=document.getElementById('ai3')?.innerHTML||'';
+  if(!obs3){alert('Complete au moins l'etape 3 avant de mettre en veille.');return;}
+
+  // Sauvegarde tout l'etat actuel
+  const entry={
+    id:Date.now(),
+    savedAt:new Date().toISOString().slice(0,16).replace('T',' '),
+    context:{...state.context},
+    entryTf:state.entryTf,
+    aiResponses:{...state.aiResponses},
+    images:{...state.images},
+    observations:{
+      weekly:document.getElementById('obs1')?.value||'',
+      daily:document.getElementById('obs2')?.value||'',
+      ob:obs3,
+      entry:''
+    },
+    obTf:document.getElementById('ob-tf')?.value||'',
+    obType:document.getElementById('ob-type')?.value||'',
+    ai3Html:ai3,
+    status:'waiting'
+  };
+
+  watchlist.unshift(entry);
+  localStorage.setItem('sd_watchlist',JSON.stringify(watchlist));
+  updateWatchlistBadge();
+
+  // Reset et confirmation
+  const confirmed=confirm('Setup '+pair+' mis en veille !
+
+Tu peux maintenant analyser une autre paire.
+Retrouve ce setup dans l'onglet Watchlist quand le prix arrive dans ta zone.
+
+Commencer une nouvelle analyse ?');
+  if(confirmed)resetAnalysis();
+}
+
+function resumeFromWatchlist(id){
+  const entry=watchlist.find(w=>w.id===id);
+  if(!entry)return;
+
+  // Restaurer tout l'etat
+  state.context={...entry.context};
+  state.entryTf=entry.entryTf||'M15';
+  state.aiResponses={...entry.aiResponses};
+  state.images={...entry.images};
+  state.finalScore=null;
+  state.finalVerdict=null;
+
+  // Mettre a jour l'interface step 0
+  document.getElementById('ctx-pair').value=entry.context.pair||'';
+  document.getElementById('ctx-mode').value=entry.context.mode||'reel';
+  document.getElementById('ctx-dir').value=entry.context.dir||'BUY';
+  document.getElementById('ctx-date').value=entry.context.date||'';
+  document.getElementById('ctx-session').value=entry.context.session||'London';
+
+  // Afficher les etapes et restaurer les observations
+  document.getElementById('step0-card').style.display='none';
+  document.getElementById('stepsBar').style.display='flex';
+  showStep(4);
+
+  // Restaurer les observations
+  if(document.getElementById('obs1'))document.getElementById('obs1').value=entry.observations?.weekly||'';
+  if(document.getElementById('obs2'))document.getElementById('obs2').value=entry.observations?.daily||'';
+  if(document.getElementById('obs3'))document.getElementById('obs3').value=entry.observations?.ob||'';
+  if(document.getElementById('ob-tf')&&entry.obTf)document.getElementById('ob-tf').value=entry.obTf;
+
+  // Restaurer les images
+  [1,2,3].forEach(i=>{
+    const imgKey='file'+i;
+    if(entry.images[imgKey]){
+      document.getElementById('prev'+i).innerHTML='<div class="img-preview"><img src="'+entry.images[imgKey]+'"></div>';
+    }
+  });
+
+  // Restaurer les reponses IA
+  [1,2,3].forEach(i=>{
+    const aiDiv=document.getElementById('ai'+i);
+    if(aiDiv&&entry.aiResponses[i]){
+      aiDiv.innerHTML='<div class="ai-response">'+entry.aiResponses[i]+'</div>';
+    }
+  });
+
+  // Marquer en "repris"
+  const idx=watchlist.findIndex(w=>w.id===id);
+  if(idx>=0){watchlist[idx].status='resumed';watchlist[idx].resumedAt=new Date().toISOString().slice(0,16).replace('T',' ');}
+  localStorage.setItem('sd_watchlist',JSON.stringify(watchlist));
+
+  // Basculer sur l'onglet analyse
+  switchTab('analyse',document.querySelectorAll('.tab')[0]);
+  document.querySelectorAll('.tab').forEach((t,i)=>{t.classList.toggle('active',i===0);});
+  window.scrollTo({top:0,behavior:'smooth'});
+
+  alert('Setup '+entry.context.pair+' repris ! Tu es directement a l'etape 4 — Entree M15/M5.');
+}
+
+function deleteWatchlistEntry(id){
+  if(!confirm('Supprimer ce setup de la watchlist ?'))return;
+  watchlist=watchlist.filter(w=>w.id!==id);
+  localStorage.setItem('sd_watchlist',JSON.stringify(watchlist));
+  updateWatchlistBadge();
+  renderWatchlist();
+}
+
+function clearWatchlist(){
+  if(!confirm('Effacer toute la watchlist ?'))return;
+  watchlist=[];
+  localStorage.setItem('sd_watchlist',JSON.stringify(watchlist));
+  updateWatchlistBadge();
+  renderWatchlist();
+}
+
+function updateWatchlistBadge(){
+  const waiting=watchlist.filter(w=>w.status==='waiting').length;
+  const badge=document.getElementById('wl-badge');
+  if(badge){badge.textContent=waiting;badge.style.display=waiting>0?'inline':'none';}
+}
+
+function renderWatchlist(){
+  updateWatchlistBadge();
+  const list=document.getElementById('watchlist-list');
+  const empty=document.getElementById('watchlist-empty');
+  if(!watchlist.length){if(empty)empty.style.display='block';if(list)list.innerHTML='';return;}
+  if(empty)empty.style.display='none';
+
+  list.innerHTML=watchlist.map(w=>{
+    const dir=w.context?.dir||'?';
+    const dirColor=dir==='BUY'?'color:var(--green)':'color:var(--red)';
+    const statusBg=w.status==='waiting'?'background:var(--amber-bg);color:var(--amber);border-color:var(--amber-bd)':'background:var(--green-bg);color:var(--green);border-color:var(--green-bd)';
+    const statusTxt=w.status==='waiting'?'⏸ En attente':'▶ Repris';
+    const hasImg1=!!w.images?.file1;const hasImg2=!!w.images?.file2;const hasImg3=!!w.images?.file3;
+
+    return`<div class="card" style="margin-bottom:12px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:12px">
+        <div>
+          <div style="font-size:15px;font-weight:500;color:#111">${w.context?.pair||'?'} <span style="${dirColor};font-size:12px">${dir}</span></div>
+          <div style="font-size:11px;color:#9ca3af;margin-top:2px">Mis en veille le ${w.savedAt} · Session ${w.context?.session||'?'} · ${w.context?.mode||'?'}</div>
+          ${w.resumedAt?'<div style="font-size:11px;color:var(--green);margin-top:2px">Repris le '+w.resumedAt+'</div>':''}
+        </div>
+        <span style="padding:3px 10px;border-radius:10px;font-size:11px;font-weight:500;border:0.5px solid;${statusBg}">${statusTxt}</span>
+      </div>
+
+      <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap">
+        <span style="font-size:10px;padding:2px 8px;border-radius:10px;background:${hasImg1?'var(--green-bg)':'#f3f4f6'};color:${hasImg1?'var(--green)':'#9ca3af'};border:0.5px solid ${hasImg1?'var(--green-bd)':'var(--border)'}">Weekly ${hasImg1?'✓':'—'}</span>
+        <span style="font-size:10px;padding:2px 8px;border-radius:10px;background:${hasImg2?'var(--green-bg)':'#f3f4f6'};color:${hasImg2?'var(--green)':'#9ca3af'};border:0.5px solid ${hasImg2?'var(--green-bd)':'var(--border)'}">Daily ${hasImg2?'✓':'—'}</span>
+        <span style="font-size:10px;padding:2px 8px;border-radius:10px;background:${hasImg3?'var(--green-bg)':'#f3f4f6'};color:${hasImg3?'var(--green)':'#9ca3af'};border:0.5px solid ${hasImg3?'var(--green-bd)':'var(--border)'}">OB ${w.obTf||'4H'} ${hasImg3?'✓':'—'}</span>
+        <span style="font-size:10px;padding:2px 8px;border-radius:10px;background:var(--blue-bg);color:var(--blue);border:0.5px solid var(--blue-bd)">Score attendu : ${w.aiResponses[3]?.match(/(\d+[,.]?\d*)\s*%/)?.[0]||'?'}</span>
+      </div>
+
+      <div style="font-size:12px;color:#6b7280;background:#f9fafb;border-radius:6px;padding:10px;margin-bottom:10px;max-height:80px;overflow-y:auto;white-space:pre-wrap">${w.observations?.ob||'Aucune observation OB'}</div>
+
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        ${w.status==='waiting'?`<button class="btn btn-primary" onclick="resumeFromWatchlist(${w.id})">▶ Reprendre — prix dans ma zone</button>`:'<span style="font-size:12px;color:var(--green);padding:6px 0">Setup repris dans l'analyse</span>'}
+        <button class="btn btn-red" onclick="deleteWatchlistEntry(${w.id})">Supprimer</button>
+      </div>
+    </div>`;
+  }).join('');
 }
 
 // ═══ EXPORT CSV ═══
