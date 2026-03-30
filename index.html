@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<!-- saved from url=(0058)file:///C:/Users/brian/Downloads/SD_AvocatDuDiable_v2.html -->
+<html lang="fr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#111111">
+<title>S&amp;D — Avocat du Diable</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,sans-serif;background:#f8f9fa;color:#1a1a1a;min-height:100vh}
+:root{
+  --green:#2d7a2d;--green-bg:#f0f7f0;--green-bd:#b8d9b8;
+  --red:#b91c1c;--red-bg:#fef2f2;--red-bd:#fca5a5;
+  --amber:#92400e;--amber-bg:#fffbeb;--amber-bd:#fcd34d;
+  --blue:#1e40af;--blue-bg:#eff6ff;--blue-bd:#93c5fd;
+  --border:#e5e7eb;--radius:8px;--radius-lg:12px;
+}
+.app{max-width:900px;margin:0 auto;padding:16px}
+.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding:14px 18px;background:#fff;border:0.5px solid var(--border);border-radius:var(--radius-lg)}
+.header-title{font-size:16px;font-weight:500;color:#111}
+.header-sub{font-size:12px;color:#6b7280;margin-top:2px}
+.tab-row{display:flex;gap:4px}
+.tab{padding:6px 14px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;border:0.5px solid var(--border);background:transparent;color:#6b7280;transition:all .15s}
+.tab.active{background:#111;color:#fff;border-color:#111}
+.apikey-bar{display:flex;gap:8px;align-items:center;padding:10px 14px;background:#fff;border:0.5px solid var(--border);border-radius:var(--radius);margin-bottom:16px;flex-wrap:wrap}
+.apikey-bar input{flex:1;min-width:180px;border:0.5px solid var(--border);border-radius:6px;padding:6px 10px;font-size:12px;font-family:monospace;outline:none}
+.apikey-bar input:focus{border-color:#111}
+.btn-sm{padding:6px 12px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;border:0.5px solid #111;background:#111;color:#fff}
+.api-status{font-size:11px;font-weight:500}
+.api-status.ok{color:var(--green)}.api-status.no{color:var(--red)}
+.card{background:#fff;border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:16px;margin-bottom:12px}
+.card-title{font-size:13px;font-weight:500;color:#111;margin-bottom:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.step-badge{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:#111;color:#fff;font-size:10px;font-weight:500;flex-shrink:0}
+.step-badge.done{background:var(--green)}.step-badge.waiting{background:#e5e7eb;color:#9ca3af}
+.field{margin-bottom:12px}
+.field label{display:block;font-size:12px;color:#6b7280;margin-bottom:4px}
+.field select,.field input,.field textarea{width:100%;border:0.5px solid var(--border);border-radius:var(--radius);padding:8px 10px;font-size:13px;outline:none;background:#fff;color:#111;transition:border-color .15s}
+.field select:focus,.field input:focus,.field textarea:focus{border-color:#111}
+.field textarea{resize:vertical;min-height:70px;font-family:system-ui}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.row4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px}
+.fav-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.fav-chip{padding:5px 12px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;border:0.5px solid var(--border);background:#f9fafb;color:#374151;transition:all .15s}
+.fav-chip:hover{border-color:#111;background:#f3f4f6}
+.fav-chip.selected{background:#111;color:#fff;border-color:#111}
+.btn{padding:9px 18px;border-radius:var(--radius);font-size:13px;font-weight:500;cursor:pointer;border:0.5px solid var(--border);background:#fff;color:#111;transition:all .15s;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{background:#f9fafb}.btn:active{transform:scale(0.98)}
+.btn-primary{background:#111;color:#fff;border-color:#111}.btn-primary:hover{background:#222}
+.btn-green{background:var(--green-bg);color:var(--green);border-color:var(--green-bd)}
+.btn-red{background:var(--red-bg);color:var(--red);border-color:var(--red-bd)}
+.btn-group{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.img-upload{border:1px dashed var(--border);border-radius:var(--radius);padding:20px;text-align:center;cursor:pointer;transition:all .15s;background:#fafafa}
+.img-upload:hover{border-color:#111;background:#f5f5f5}
+.img-upload input{display:none}
+.u-icon{font-size:20px;margin-bottom:6px;color:#9ca3af}
+.u-title{font-size:13px;color:#374151;margin-bottom:4px}
+.u-hint{font-size:11px;color:#9ca3af}
+.img-preview{margin-top:10px;border-radius:var(--radius);overflow:hidden;border:0.5px solid var(--border)}
+.img-preview img{width:100%;display:block;max-height:260px;object-fit:contain;background:#000}
+.ai-response{background:#f9fafb;border:0.5px solid var(--border);border-radius:var(--radius);padding:14px;margin-top:12px;font-size:13px;line-height:1.7;color:#374151;white-space:pre-wrap}
+.ai-response.loading{display:flex;align-items:center;gap:8px;color:#9ca3af}
+.ai-verdict{padding:12px 16px;border-radius:var(--radius);margin-top:12px;font-size:14px;font-weight:500;text-align:center;border:1px solid}
+.ai-verdict.trade{background:var(--green-bg);color:var(--green);border-color:var(--green-bd)}
+.ai-verdict.skip{background:var(--red-bg);color:var(--red);border-color:var(--red-bd)}
+.ai-verdict.wait{background:var(--amber-bg);color:var(--amber);border-color:var(--amber-bd)}
+.score-display{display:flex;gap:8px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+.score-pill{padding:4px 12px;border-radius:20px;font-size:12px;font-weight:500;border:0.5px solid var(--border);background:#f9fafb;color:#6b7280}
+.score-pill.active{background:#111;color:#fff;border-color:#111}
+.steps-bar{display:flex;gap:4px;margin-bottom:16px}
+.step-dot{flex:1;height:3px;border-radius:2px;background:#e5e7eb;transition:background .3s}
+.step-dot.done{background:#111}.step-dot.active{background:#6b7280}
+.tf-selector{display:flex;gap:6px}
+.tf-btn{padding:5px 12px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;border:0.5px solid var(--border);background:#f9fafb;color:#374151;transition:all .15s}
+.tf-btn.active{background:#111;color:#fff;border-color:#111}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
+.stat-card{background:#f9fafb;border-radius:var(--radius);padding:10px 12px;border:0.5px solid var(--border)}
+.stat-label{font-size:11px;color:#9ca3af;margin-bottom:4px}
+.stat-val{font-size:20px;font-weight:500;color:#111}
+.journal-filters{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;align-items:center}
+.filter-chip{padding:4px 10px;border-radius:20px;font-size:11px;font-weight:500;cursor:pointer;border:0.5px solid var(--border);background:#fff;color:#6b7280}
+.filter-chip.active{background:#111;color:#fff;border-color:#111}
+.trade-row{padding:12px 14px;border:0.5px solid var(--border);border-radius:var(--radius);margin-bottom:6px;background:#fff;cursor:pointer;transition:border-color .15s}
+.trade-row:hover{border-color:#111}
+.trade-row-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;flex-wrap:wrap;gap:4px}
+.trade-pair{font-size:13px;font-weight:500}
+.trade-meta{font-size:11px;color:#9ca3af;display:flex;gap:10px;flex-wrap:wrap}
+.trade-verdict{padding:2px 8px;border-radius:10px;font-size:11px;font-weight:500}
+.trade-verdict.win{background:var(--green-bg);color:var(--green)}
+.trade-verdict.loss{background:var(--red-bg);color:var(--red)}
+.trade-verdict.be{background:#f3f4f6;color:#6b7280}
+.trade-verdict.pending{background:var(--amber-bg);color:var(--amber)}
+.trade-score{padding:2px 8px;border-radius:10px;font-size:11px;background:#f3f4f6;color:#374151}
+.trade-detail{margin-top:10px;padding-top:10px;border-top:0.5px solid var(--border);display:none}
+.trade-detail.show{display:block}
+.trade-ai-text{font-size:12px;line-height:1.6;color:#6b7280;white-space:pre-wrap;background:#f9fafb;padding:10px;border-radius:6px;margin-top:6px;max-height:200px;overflow-y:auto}
+.mode-tag{padding:2px 8px;border-radius:10px;font-size:10px;font-weight:500}
+.mode-tag.backtest{background:var(--blue-bg);color:var(--blue);border:0.5px solid var(--blue-bd)}
+.mode-tag.reel{background:var(--amber-bg);color:var(--amber);border:0.5px solid var(--amber-bd)}
+.section-sep{display:flex;align-items:center;gap:10px;margin:20px 0 12px;font-size:11px;font-weight:500;color:#9ca3af;letter-spacing:.06em;text-transform:uppercase}
+.section-sep::before,.section-sep::after{content:'';flex:1;height:0.5px;background:var(--border)}
+.empty{text-align:center;padding:40px 20px;color:#9ca3af;font-size:13px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{display:inline-block;animation:spin 1s linear infinite}
+.install-banner{display:none;align-items:center;gap:10px;padding:10px 14px;background:var(--blue-bg);border:0.5px solid var(--blue-bd);border-radius:var(--radius);margin-bottom:12px;font-size:12px;color:var(--blue)}
+.install-banner.show{display:flex}
+@media(max-width:640px){.row2,.row3,.row4{grid-template-columns:1fr 1fr}.stats-grid{grid-template-columns:1fr 1fr}.app{padding:10px}}
+@media(max-width:400px){.row2,.row3,.row4{grid-template-columns:1fr}}
+</style>
+<script src="./index_files/chart.umd.min.js.télécharger"></script></head>
+<body>
+<div class="app">
+
+<div class="install-banner" id="installBanner">
+  <span style="flex:1">Installe cette appli sur ton appareil</span>
+  <button id="installBtn" class="btn-sm">Installer</button>
+  <span style="cursor:pointer;color:#9ca3af;margin-left:4px" onclick="document.getElementById(&#39;installBanner&#39;).classList.remove(&#39;show&#39;)">x</span>
+</div>
+
+<div class="header">
+  <div>
+    <div class="header-title">S&amp;D — Avocat du Diable</div>
+    <div class="header-sub" id="header-sub">Analyse par captures · Challenge IA · Journal backtest + reel</div>
+  </div>
+  <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
+    <div style="display:flex;gap:4px;background:#f3f4f6;border-radius:8px;padding:3px">
+      <button id="mode-swing" onclick="setTradingMode(&#39;swing&#39;,this)" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;background:#111;color:#fff;transition:all .15s">Swing</button>
+      <button id="mode-day" onclick="setTradingMode(&#39;day&#39;,this)" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;background:transparent;color:#6b7280;transition:all .15s">Day Trading</button>
+    </div>
+    <div class="tab-row">
+      <button class="tab active" onclick="switchTab(&#39;analyse&#39;,this)">Analyse</button>
+      <button class="tab" onclick="switchTab(&#39;journal&#39;,this)">Journal</button>
+      <button class="tab" onclick="switchTab(&#39;checklist&#39;,this)">Checklist</button>
+    </div>
+  </div>
+</div>
+
+<div class="apikey-bar">
+  <span style="font-size:12px;color:#6b7280;white-space:nowrap">Cle API Anthropic :</span>
+  <input type="password" id="apiKey" placeholder="sk-ant-api03-..." autocomplete="off">
+  <button class="btn-sm" onclick="saveKey()">Sauvegarder</button>
+  <span class="api-status ok" id="apiStatus">Configuree</span>
+</div>
+
+<div id="tab-analyse">
+
+<div class="card" id="step0-card">
+  <div class="card-title"><span class="step-badge">1</span>Contexte du setup</div>
+  <div class="field">
+    <label>Paire — clique un favori ou tape librement</label>
+    <div class="fav-chips" id="favChips">
+      <span class="fav-chip" onclick="selectFav(&#39;GBPUSD&#39;,this)">GBPUSD</span>
+      <span class="fav-chip" onclick="selectFav(&#39;EURUSD&#39;,this)">EURUSD</span>
+      <span class="fav-chip" onclick="selectFav(&#39;XAUUSD&#39;,this)">XAUUSD</span>
+      <span class="fav-chip" onclick="selectFav(&#39;US100&#39;,this)">US100</span>
+    </div>
+    <input type="text" id="ctx-pair" placeholder="Ou tape : BTCUSD, USDJPY, GBPJPY, NAS100, SP500..." oninput="clearFavSelect()">
+  </div>
+  <div class="row2">
+    <div class="field">
+      <label>Mode</label>
+      <select id="ctx-mode">
+        <option value="reel">Analyse reelle (session live)</option>
+        <option value="backtest">Backtest (FX Replay)</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Direction visee</label>
+      <select id="ctx-dir">
+        <option value="BUY">BUY (achat)</option>
+        <option value="SELL">SELL (vente)</option>
+        <option value="CONTEXT">ANALYSER — contexte seulement (DXY, corrélations...)</option>
+      </select>
+    </div>
+  </div>
+  <div class="row2">
+    <div class="field">
+      <label>Date</label>
+      <input type="date" id="ctx-date">
+    </div>
+    <div class="field">
+      <label>Session</label>
+      <select id="ctx-session">
+        <option>London</option><option>New York</option>
+        <option>Overlap London/NY</option><option>Asie</option><option>Pre-London</option>
+      </select>
+    </div>
+  </div>
+  <div class="btn-group">
+    <button class="btn btn-primary" onclick="startAnalysis()">Demarrer l'analyse →</button>
+  </div>
+</div>
+
+<div class="steps-bar" id="stepsBar" style="display:none">
+  <div class="step-dot active" id="sdot1"></div>
+  <div class="step-dot" id="sdot2"></div>
+  <div class="step-dot" id="sdot3"></div>
+  <div class="step-dot" id="sdot4"></div>
+  <div class="step-dot" id="sdot5"></div>
+</div>
+
+<div class="card" id="step1-card" style="display:none">
+  <div class="card-title"><span class="step-badge active" id="badge1">2</span>Etape 1 — Biais Weekly</div>
+  <div class="img-upload" onclick="document.getElementById(&#39;file1&#39;).click()">
+    <input type="file" id="file1" accept="image/*" onchange="previewImg(&#39;file1&#39;,&#39;prev1&#39;,this)">
+    <div class="u-icon">+</div><div class="u-title">Capture Weekly</div>
+    <div class="u-hint">Clique / glisse / ou Ctrl+V pour coller depuis le presse-papier</div>
+  </div>
+  <div id="prev1"></div>
+  <div class="field" style="margin-top:12px">
+    <label>Ta lecture — ce que TU vois sur ce Weekly</label>
+    <textarea id="obs1" placeholder="Ex: HH+HL confirme depuis low 2022, prix en zone Discount sous le midpoint 1.3518, prochaine BSL a 1.3800. Daily montre CHoCH bearish en cloture donc correction en cours..."></textarea>
+  </div>
+  <div class="btn-group"><button class="btn btn-primary" onclick="analyzeStep(1)">L'IA analyse mon Weekly →</button></div>
+  <div id="ai1"></div>
+</div>
+
+<div class="card" id="step2-card" style="display:none">
+  <div class="card-title"><span class="step-badge waiting" id="badge2">3</span>Etape 2 — Structure Daily</div>
+  <div class="img-upload" onclick="document.getElementById(&#39;file2&#39;).click()">
+    <input type="file" id="file2" accept="image/*" onchange="previewImg(&#39;file2&#39;,&#39;prev2&#39;,this)">
+    <div class="u-icon">+</div><div class="u-title">Capture Daily</div>
+    <div class="u-hint">Clique / glisse / ou Ctrl+V pour coller</div>
+  </div>
+  <div id="prev2"></div>
+  <div class="field" style="margin-top:12px">
+    <label>Ta lecture Daily</label>
+    <textarea id="obs2" placeholder="Ex: CHoCH bearish Daily confirme en CLOTURE a 1.3330. Structure LH+LL active. Zones de demande a 1.2800 (61.8%) et 1.2630 (71%), OBs intacts sur les deux zones..."></textarea>
+  </div>
+  <div class="btn-group"><button class="btn btn-primary" onclick="analyzeStep(2)">L'IA challenge mon Daily →</button></div>
+  <div id="ai2"></div>
+</div>
+
+<div class="card" id="step3-card" style="display:none">
+  <div class="card-title"><span class="step-badge waiting" id="badge3">4</span>Etape 3 — Order Block + Inducement (4H/H1)</div>
+  <div class="img-upload" onclick="document.getElementById(&#39;file3&#39;).click()">
+    <input type="file" id="file3" accept="image/*" onchange="previewImg(&#39;file3&#39;,&#39;prev3&#39;,this)">
+    <div class="u-icon">+</div><div class="u-title">Capture 4H ou H1</div>
+    <div class="u-hint">Clique / glisse / ou Ctrl+V pour coller</div>
+  </div>
+  <div id="prev3"></div>
+  <div class="row2" style="margin-top:12px">
+    <div class="field">
+      <label>TF de l'OB</label>
+      <select id="ob-tf"><option>4H</option><option>H1</option><option>4H + H1</option></select>
+    </div>
+    <div class="field">
+      <label>Type d'OB</label>
+      <select id="ob-type">
+        <option value="1">Type 1 — Derniere bougie opposee</option>
+        <option value="2">Type 2 — Bougie avec FVG laisse</option>
+        <option value="algo">Algo — Zone de consolidation</option>
+      </select>
+    </div>
+  </div>
+  <div class="field">
+    <label>Ta lecture OB + Inducement</label>
+    <textarea id="obs3" placeholder="Ex: OB H1 a 1.3450, a cause un BOS en cloture H1, FVG laisse dans le sillage. Inducement = equal highs a 1.3508 entre prix et OB. Inducement deja swepe donc entree normale. SL sous meche basse + 15pts buffer, pas entre prix et inducement..."></textarea>
+  </div>
+  <div class="btn-group"><button class="btn btn-primary" onclick="analyzeStep(3)">L'IA valide l'OB et l'inducement →</button></div>
+  <div id="ai3"></div>
+</div>
+
+<div class="card" id="step4-card" style="display:none">
+  <div class="card-title">
+    <span class="step-badge waiting" id="badge4">5</span>
+    Etape 4 — Entree
+    <div class="tf-selector" id="entryTfSelector">
+      <button class="tf-btn active" onclick="setEntryTf(&#39;M15&#39;,this)">M15</button>
+      <button class="tf-btn" onclick="setEntryTf(&#39;M5&#39;,this)">M5</button>
+    </div>
+  </div>
+  <div class="img-upload" onclick="document.getElementById(&#39;file4&#39;).click()">
+    <input type="file" id="file4" accept="image/*" onchange="previewImg(&#39;file4&#39;,&#39;prev4&#39;,this)">
+    <div class="u-icon">+</div>
+    <div class="u-title" id="entryImgTitle">Capture M15</div>
+    <div class="u-hint">Clique / glisse / ou Ctrl+V pour coller</div>
+  </div>
+  <div id="prev4"></div>
+  <div class="row4" style="margin-top:12px">
+    <div class="field"><label>Prix entree</label><input type="number" id="entry-price" placeholder="1.3420" step="0.0001"></div>
+    <div class="field"><label>Stop Loss</label><input type="number" id="sl-price" placeholder="1.3390" step="0.0001"></div>
+    <div class="field"><label>TP1</label><input type="number" id="tp1-price" placeholder="1.3480" step="0.0001"></div>
+    <div class="field"><label>TP2</label><input type="number" id="tp2-price" placeholder="1.3800" step="0.0001"></div>
+  </div>
+  <div id="rrr-display" style="font-size:12px;margin-bottom:8px"></div>
+  <div class="field">
+    <label>Ta lecture de l'entree + justification</label>
+    <textarea id="obs4" placeholder="Ex: CHoCH M15 bullish confirme en CLOTURE a l&#39;interieur de la zone OB. HLow forme puis HHigh casse en cloture. SL sous meche basse OB + 15pts. TP1 = inducement, TP2 = BSL weekly 1.3800. RRR = 2.4..."></textarea>
+  </div>
+  <div class="btn-group"><button class="btn btn-primary" onclick="analyzeStep(4)">Verdict final de l'IA →</button></div>
+  <div id="ai4"></div>
+</div>
+
+<div class="card" id="verdict-card" style="display:none">
+  <div class="card-title"><span class="step-badge done">✓</span>Verdict final</div>
+  <div id="final-verdict"></div>
+  <div id="final-score" class="score-display"></div>
+  <div class="btn-group" style="margin-top:16px">
+    <button class="btn btn-green" onclick="saveToJournal(&#39;trade&#39;)">Je prends le trade — sauvegarder</button>
+    <button class="btn" style="background:var(--blue-bg);color:var(--blue);border-color:var(--blue-bd)" onclick="showPositionCalc()">Calculer la taille de position</button>
+    <button class="btn btn-red" onclick="saveToJournal(&#39;skip&#39;)">Je skip — sauvegarder</button>
+    <button class="btn" onclick="resetAnalysis()">Nouvelle analyse</button>
+  </div>
+</div>
+
+</div>
+
+<div id="tab-journal" style="display:none">
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-label">Total entrees</div><div class="stat-val" id="st-total">0</div></div>
+    <div class="stat-card"><div class="stat-label">Win rate</div><div class="stat-val" id="st-wr">—</div></div>
+    <div class="stat-card"><div class="stat-label">Setup A+</div><div class="stat-val" id="st-aplus">0</div></div>
+    <div class="stat-card"><div class="stat-label">Skips</div><div class="stat-val" id="st-skips">0</div></div>
+  </div>
+  <div class="journal-filters">
+    <span style="font-size:11px;color:#9ca3af">Filtres :</span>
+    <button class="filter-chip active" onclick="filterJournal(&#39;all&#39;,this)">Tous</button>
+    <button class="filter-chip" onclick="filterJournal(&#39;reel&#39;,this)">Reel</button>
+    <button class="filter-chip" onclick="filterJournal(&#39;backtest&#39;,this)">Backtest</button>
+    <button class="filter-chip" onclick="filterJournal(&#39;trade&#39;,this)">Trades pris</button>
+    <button class="filter-chip" onclick="filterJournal(&#39;skip&#39;,this)">Skips</button>
+    <button class="filter-chip" onclick="filterJournal(&#39;win&#39;,this)">Wins</button>
+    <button class="filter-chip" onclick="filterJournal(&#39;loss&#39;,this)">Losses</button>
+    <button style="font-size:11px;color:#1e40af;cursor:pointer;background:none;border:none;margin-left:auto" onclick="exportJSON()">↓ Export JSON</button>
+    <label style="font-size:11px;color:#1e40af;cursor:pointer;background:none;border:none"><input type="file" accept=".json" onchange="importJSON(this)" style="display:none">↑ Import JSON</label>
+    <button style="font-size:11px;color:var(--red);cursor:pointer;background:none;border:none" onclick="clearJournal()">Tout effacer</button>
+  </div>
+  <div class="card" style="padding:14px;margin-bottom:12px">
+    <div style="font-size:12px;font-weight:500;color:#111;margin-bottom:10px">Evolution win rate (trades fermes)</div>
+    <canvas id="wrChart" height="80"></canvas>
+  </div>
+  <div id="tradeList"></div>
+  <div class="section-sep">Ajouter un trade manuellement</div>
+  <div class="card">
+    <div class="field">
+      <label>Paire</label>
+      <div class="fav-chips">
+        <span class="fav-chip" onclick="selectManualFav(&#39;GBPUSD&#39;,this)">GBPUSD</span>
+        <span class="fav-chip" onclick="selectManualFav(&#39;EURUSD&#39;,this)">EURUSD</span>
+        <span class="fav-chip" onclick="selectManualFav(&#39;XAUUSD&#39;,this)">XAUUSD</span>
+        <span class="fav-chip" onclick="selectManualFav(&#39;US100&#39;,this)">US100</span>
+      </div>
+      <input type="text" id="m-pair" placeholder="Ou tape librement...">
+    </div>
+    <div class="row3">
+      <div class="field"><label>Mode</label><select id="m-mode"><option value="reel">Reel</option><option value="backtest">Backtest</option></select></div>
+      <div class="field"><label>Direction</label><select id="m-dir"><option value="BUY">BUY</option><option value="SELL">SELL</option></select></div>
+      <div class="field"><label>TF entree</label><select id="m-tf"><option>M15</option><option>M5</option></select></div>
+    </div>
+    <div class="row3">
+      <div class="field"><label>Score</label>
+        <select id="m-score">
+          <option value="0.25">0.25% — OB seul</option>
+          <option value="0.5">0.50% — + FVG</option>
+          <option value="0.75">0.75% — + Ind. swepe</option>
+          <option value="1.0">1.00% — A+ Fibo</option>
+        </select>
+      </div>
+      <div class="field"><label>Resultat</label>
+        <select id="m-result">
+          <option value="pending">En cours</option>
+          <option value="win">Win</option>
+          <option value="loss">Loss</option>
+          <option value="be">Breakeven</option>
+        </select>
+      </div>
+      <div class="field"><label>R:R obtenu</label><input type="number" id="m-rr" placeholder="2.5" step="0.1"></div>
+    </div>
+    <div class="field"><label>Notes</label><textarea id="m-notes" placeholder="Pourquoi ce trade ? Qu&#39;est-ce qui s&#39;est passe ?" style="min-height:50px"></textarea></div>
+    <div class="btn-group"><button class="btn btn-primary" onclick="addManualTrade()">Ajouter au journal</button></div>
+  </div>
+</div>
+
+<!-- ═══ CHECKLIST TAB ═══ -->
+<div id="tab-checklist" style="display:none">
+  <div style="display:flex;gap:6px;margin-bottom:14px;align-items:center;flex-wrap:wrap">
+    <span style="font-size:11px;color:#9ca3af">Mode checklist :</span>
+    <button class="filter-chip active" id="cl-swing-btn" onclick="switchChecklist(&#39;swing&#39;,this)">Swing Trading</button>
+    <button class="filter-chip" id="cl-day-btn" onclick="switchChecklist(&#39;day&#39;,this)">Day Trading</button>
+  </div>
+
+  <!-- SWING CHECKLIST -->
+  <div id="cl-swing" style="display: block;">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <div class="card" style="margin:0">
+      <div class="card-title" style="color:var(--blue)">01 — BIAIS WEEKLY / DAILY</div>
+      <div id="cl-s-1"></div>
+    </div>
+    <div class="card" style="margin:0">
+      <div class="card-title" style="color:var(--blue)">02 — STRUCTURE 4H / H1</div>
+      <div id="cl-s-2"></div>
+    </div>
+    <div class="card" style="margin:0">
+      <div class="card-title" style="color:var(--blue)">03A — ORDER BLOCK H1/M15</div>
+      <div id="cl-s-3a"></div>
+    </div>
+    <div class="card" style="margin:0">
+      <div class="card-title" style="color:var(--blue)">03B — INDUCEMENT</div>
+      <div id="cl-s-3b"></div>
+    </div>
+    <div class="card" style="margin:0">
+      <div class="card-title" style="color:var(--blue)">03C — FIBO + SCORING</div>
+      <div id="cl-s-3c"></div>
+    </div>
+    <div class="card" style="margin:0">
+      <div class="card-title" style="color:var(--blue)">04 — ENTREE M15/M5</div>
+      <div id="cl-s-4"></div>
+    </div>
+    <div class="card" style="margin:0;grid-column:span 2">
+      <div class="card-title" style="color:var(--blue)">05 — GESTION</div>
+      <div id="cl-s-5" style="display:grid;grid-template-columns:1fr 1fr;gap:0 20px"></div>
+    </div>
+  </div>
+  <div class="card" style="background:var(--red-bg);border-color:var(--red-bd);margin-top:12px">
+    <div style="font-size:11px;font-weight:600;color:var(--red);margin-bottom:6px">REGLES ABSOLUES — UNE VIOLATION = SKIP</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;font-size:11px;color:var(--red);font-weight:500">
+      <span>■ CHoCH en meche seule = INVALIDE</span><span>■ SL entre prix et inducement = INTERDIT</span>
+      <span>■ OB mitigue 2x = INVALIDE</span><span>■ Score &lt; 0.5% = SKIP</span>
+      <span>■ BOS contre-tendance Daily = PIEGE</span><span>■ Si tu dois te convaincre = SKIP</span>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:10px"><button class="btn" onclick="resetChecklist(&#39;swing&#39;)">Reinitialiser les cases</button></div>
+  </div>
+
+  <!-- DAY TRADING CHECKLIST -->
+  <div id="cl-day" style="display:none">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <div class="card" style="margin:0">
+      <div class="card-title" style="color:var(--green)">01 — BIAIS DAILY / H4 (07h00)</div>
+      <div id="cl-d-1"></div>
+    </div>
+    <div class="card" style="margin:0">
+      <div class="card-title" style="color:var(--green)">02 — STRUCTURE H1 / M30</div>
+      <div id="cl-d-2"></div>
+    </div>
+    <div class="card" style="margin:0">
+      <div class="card-title" style="color:var(--green)">03A — ORDER BLOCK M15/M5</div>
+      <div id="cl-d-3a"></div>
+    </div>
+    <div class="card" style="margin:0">
+      <div class="card-title" style="color:var(--green)">03B — INDUCEMENT</div>
+      <div id="cl-d-3b"></div>
+    </div>
+    <div class="card" style="margin:0">
+      <div class="card-title" style="color:var(--green)">03C — FIBO + SCORING</div>
+      <div id="cl-d-3c"></div>
+    </div>
+    <div class="card" style="margin:0">
+      <div class="card-title" style="color:var(--green)">04 — ENTREE M5/M1</div>
+      <div id="cl-d-4"></div>
+    </div>
+    <div class="card" style="margin:0;grid-column:span 2">
+      <div class="card-title" style="color:var(--green)">05 — GESTION + SESSIONS</div>
+      <div id="cl-d-5" style="display:grid;grid-template-columns:1fr 1fr;gap:0 20px"></div>
+    </div>
+  </div>
+  <div class="card" style="background:var(--red-bg);border-color:var(--red-bd);margin-top:12px">
+    <div style="font-size:11px;font-weight:600;color:var(--red);margin-bottom:6px">REGLES ABSOLUES DAY TRADING — UNE VIOLATION = SKIP</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;font-size:11px;color:var(--red);font-weight:500">
+      <span>■ CHoCH en meche seule = INVALIDE</span><span>■ SL entre prix et inducement = INTERDIT</span>
+      <span>■ OB mitigue 2x = INVALIDE</span><span>■ Score &lt; 0.5% = SKIP</span>
+      <span>■ Position overnight = INTERDIT</span><span>■ Fermer TOUT avant 17h00</span>
+      <span>■ 2 pertes consecutives = session terminee</span><span>■ Si tu dois te convaincre = SKIP</span>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:10px"><button class="btn" onclick="resetChecklist(&#39;day&#39;)">Reinitialiser les cases</button></div>
+  </div>
+</div>
+
+</div>
+<script>
+const SD_SYSTEM=`Tu es un trader senior specialise en Supply & Demand (S&D) / ICT / SMC.
+Tu analyses les charts comme un "Avocat du Diable" : tu ne valides pas facilement, tu CHALLENGES et tu CORRIGES.
+Tu connais parfaitement cette methodologie :
+
+ETAPE 1 BIAIS (Weekly/Daily) :
+- Structure Weekly : HH+HL=BUY / LH+LL=SELL / Ambigue=attendre
+- CHoCH Weekly en CLOTURE = reevaluer tout le biais (meche seule=invalide)
+- Daily doit etre dans le meme sens que Weekly OBLIGATOIRE
+- Discount (<50% du range)=BUY / Premium=SELL
+- Liquidite cible : BSL (uptrend) / SSL (downtrend)
+
+ETAPE 2 STRUCTURE (4H/H1) :
+- CHoCH en CLOTURE obligatoire (meche seule=invalide, skip)
+- BOS confirmatoire en CLOTURE + FVG dans le sillage
+- BOS contre-tendance Daily = piege -> skip
+
+ETAPE 3 OB + INDUCEMENT :
+- OB sur le MEME TF que le BOS/CHoCH createur
+- Conditions : cause BOS/CHoCH en cloture + FVG + non-mitigue
+- Mitigue = CLOTURE dedans (meche seule = PAS mitigue)
+- Type 1 : derniere bougie couleur opposee avant impulsion
+- Type 2 : bougie avec FVG (FVG=TP1 / OB=entree)
+- INDUCEMENT : liquidite entre prix et OB
+- JAMAIS de SL entre prix et inducement (regele absolue)
+- Non swepe -> attendre ou SL sous inducement a 0.5%
+
+ETAPE 4 ENTREE (M15 ou M5) :
+- CHoCH M15/M5 A L'INTERIEUR de la zone OB en CLOTURE
+- RRR minimum 1:2
+
+SCORING :
+- OB seul = 0.25%
+- +FVG = 0.50%
+- +Inducement swepe = 0.75%
+- +Fibo 61.8-78.6% dans zone = 1.00% (A+)
+
+REGLES ABSOLUES (une violation = skip) :
+- JAMAIS SL entre prix et inducement
+- CHoCH en meche = invalide
+- OB mitigue 2x = invalide
+- Score < 0.5% = skip
+- Si tu dois te convaincre -> skip
+
+Reponds en francais. Direct. Max 200 mots. Challenge sans pitie si quelque chose cloche.`;
+
+let state={apiKey:localStorage.getItem('sd_apikey')||'',currentStep:0,context:{},aiResponses:{},images:{},finalScore:null,finalVerdict:null,entryTf:'M15'};
+let journal=JSON.parse(localStorage.getItem('sd_journal')||'[]');
+let journalFilter='all';
+
+if(state.apiKey){document.getElementById('apiKey').value=state.apiKey;document.getElementById('apiStatus').textContent='Configuree';document.getElementById('apiStatus').className='api-status ok';}
+document.getElementById('ctx-date').value=new Date().toISOString().slice(0,10);
+
+['entry-price','sl-price','tp1-price'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('input',calcRRR);});
+
+function calcRRR(){
+  const e=parseFloat(document.getElementById('entry-price').value);
+  const s=parseFloat(document.getElementById('sl-price').value);
+  const t=parseFloat(document.getElementById('tp1-price').value);
+  const d=document.getElementById('rrr-display');
+  if(e&&s&&t){const r=Math.abs(e-s);const rw=Math.abs(t-e);const rrr=r>0?(rw/r).toFixed(2):'?';const ok=parseFloat(rrr)>=2;d.textContent='RRR calcule : 1:'+rrr+(ok?' ✓ OK':' ✗ Insuffisant (min 1:2)');d.style.color=ok?'var(--green)':'var(--red)';}else{d.textContent='';}
+}
+
+function setEntryTf(tf,btn){state.entryTf=tf;document.querySelectorAll('.tf-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('entryImgTitle').textContent='Capture '+tf;}
+
+function saveKey(){const k=document.getElementById('apiKey').value.trim().replace(/\s/g,'');if(!k.startsWith('sk-ant-')){alert('Cle invalide — doit commencer par sk-ant-');return;}state.apiKey=k;localStorage.setItem('sd_apikey',k);document.getElementById('apiStatus').textContent='Configuree';document.getElementById('apiStatus').className='api-status ok';}
+
+let tradingMode=localStorage.getItem('sd_tradingmode')||'swing';
+
+const TF_CONFIG={
+  swing:{biais:'Weekly / Daily',structure:'4H / H1',ob:'H1 / M15',entry:'M15 / M5',
+         step1:'Biais Weekly',step2:'Structure Daily',step3:'Order Block + Inducement (4H/H1)',step4:'Entree',
+         s4label:'M15',s4label2:'M5',sub:'Analyse par captures · Challenge IA · Journal backtest + reel'},
+  day:{biais:'Daily / H4',structure:'H1 / M30',ob:'M15 / M5',entry:'M5 / M1',
+       step1:'Biais Daily/H4',step2:'Structure H1/M30',step3:'Order Block + Inducement (M15/M5)',step4:'Entree',
+       s4label:'M5',s4label2:'M1',sub:'Day Trading · Sessions Londres + Overlap · Fermer avant 17h00'}
+};
+
+function setTradingMode(mode,btn){
+  tradingMode=mode;
+  localStorage.setItem('sd_tradingmode',mode);
+  document.getElementById('mode-swing').style.background=mode==='swing'?'#111':'transparent';
+  document.getElementById('mode-swing').style.color=mode==='swing'?'#fff':'#6b7280';
+  document.getElementById('mode-day').style.background=mode==='day'?'#111':'transparent';
+  document.getElementById('mode-day').style.color=mode==='day'?'#fff':'#6b7280';
+  const cfg=TF_CONFIG[mode];
+  document.getElementById('header-sub').textContent=cfg.sub;
+  // Update step labels
+  const s1=document.querySelector('#step1-card .card-title');
+  const s2=document.querySelector('#step2-card .card-title');
+  const s3=document.querySelector('#step3-card .card-title');
+  if(s1)s1.innerHTML='<span class="step-badge active" id="badge1">2</span>Etape 1 — '+cfg.step1;
+  if(s2)s2.innerHTML='<span class="step-badge waiting" id="badge2">3</span>Etape 2 — '+cfg.step2;
+  if(s3)s3.innerHTML='<span class="step-badge waiting" id="badge3">4</span>Etape 3 — '+cfg.step3;
+  // Update entry TF buttons
+  document.querySelectorAll('.tf-btn').forEach((b,i)=>{b.textContent=i===0?cfg.s4label:cfg.s4label2;});
+  const et=document.getElementById('entryImgTitle');if(et)et.textContent='Capture '+cfg.s4label;
+  state.entryTf=cfg.s4label;
+  // Sync checklist tabs
+  document.getElementById('cl-swing-btn').classList.toggle('active',mode==='swing');
+  document.getElementById('cl-day-btn').classList.toggle('active',mode==='day');
+  document.getElementById('cl-swing').style.display=mode==='swing'?'block':'none';
+  document.getElementById('cl-day').style.display=mode==='day'?'block':'none';
+}
+
+function switchTab(tab,btn){
+  ['analyse','journal','checklist'].forEach(t=>{
+    const el=document.getElementById('tab-'+t);
+    if(el)el.style.display=t===tab?'block':'none';
+  });
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  if(tab==='journal'){renderJournal();renderWRChart();}
+  if(tab==='checklist')renderChecklist();
+}
+
+function selectFav(pair,el){document.querySelectorAll('#favChips .fav-chip').forEach(c=>c.classList.remove('selected'));el.classList.add('selected');document.getElementById('ctx-pair').value=pair;}
+function clearFavSelect(){document.querySelectorAll('#favChips .fav-chip').forEach(c=>c.classList.remove('selected'));}
+function selectManualFav(pair,el){el.closest('.card').querySelectorAll('.fav-chip').forEach(c=>c.classList.remove('selected'));el.classList.add('selected');document.getElementById('m-pair').value=pair;}
+
+function loadImageFile(file,fileId,prevId){const reader=new FileReader();reader.onload=e=>{state.images[fileId]=e.target.result;document.getElementById(prevId).innerHTML='<div class="img-preview"><img src="'+e.target.result+'"></div>';};reader.readAsDataURL(file);}
+
+function previewImg(fileId,prevId,input){const file=input.files[0];if(!file)return;loadImageFile(file,fileId,prevId);}
+
+document.addEventListener('paste',e=>{
+  const items=e.clipboardData?.items;if(!items)return;
+  for(const item of items){
+    if(item.type.startsWith('image/')){
+      for(let i=1;i<=4;i++){
+        const card=document.getElementById('step'+i+'-card');
+        if(card&&card.style.display!=='none'){
+          e.preventDefault();
+          const file=item.getAsFile();
+          if(file)loadImageFile(file,'file'+i,'prev'+i);
+          return;
+        }
+      }
+    }
+  }
+});
+
+function startAnalysis(){const pair=document.getElementById('ctx-pair').value.trim();if(!pair){alert('Choisis ou tape une paire.');return;}state.context={pair,mode:document.getElementById('ctx-mode').value,dir:document.getElementById('ctx-dir').value,date:document.getElementById('ctx-date').value,session:document.getElementById('ctx-session').value};state.currentStep=1;state.aiResponses={};state.images={};document.getElementById('step0-card').style.display='none';document.getElementById('stepsBar').style.display='flex';showStep(1);}
+
+function showStep(n){for(let i=1;i<=4;i++){const c=document.getElementById('step'+i+'-card');if(c)c.style.display=i<=n?'block':'none';}document.getElementById('verdict-card').style.display='none';for(let i=1;i<=5;i++){const d=document.getElementById('sdot'+i);if(d)d.className='step-dot'+(i<n?' done':i===n?' active':'');}for(let i=1;i<=4;i++){const b=document.getElementById('badge'+i);if(!b)continue;b.className='step-badge'+(i<n?' done':i===n?'':' waiting');b.textContent=i<n?'✓':(i+1).toString();}}
+
+async function callClaude(userPrompt,imgBase64){
+  if(!state.apiKey){alert('Configure ta cle API en haut.');throw new Error('Pas de cle');}
+  let mediaType='image/jpeg';
+  if(imgBase64){const h=imgBase64.split(';')[0];if(h.includes('png'))mediaType='image/png';else if(h.includes('webp'))mediaType='image/webp';else if(h.includes('gif'))mediaType='image/gif';}
+  const content=imgBase64?[{type:'image',source:{type:'base64',media_type:mediaType,data:imgBase64.split(',')[1]}},{type:'text',text:userPrompt}]:[{type:'text',text:userPrompt}];
+  const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':state.apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:700,system:SD_SYSTEM,messages:[{role:'user',content}]})});
+  if(!r.ok){const d=await r.json().catch(()=>({}));throw new Error(d.error?.message||'HTTP '+r.status);}
+  const d=await r.json();return d.content[0].text;
+}
+
+async function analyzeStep(step){
+  const obs=document.getElementById('obs'+step)?.value?.trim();
+  if(!obs){alert('Decris ta lecture avant de soumettre.');return;}
+  const aiDiv=document.getElementById('ai'+step);
+  aiDiv.innerHTML='<div class="ai-response loading"><span class="spin">⊙</span> L\'IA analyse ton chart...</div>';
+  const ctx=state.context;const img=state.images['file'+step]||null;let prompt='';
+
+  if(step===1){
+    const isContext = ctx.dir === 'CONTEXT';
+    prompt=isContext
+      ? `Analyse de contexte macro — ${ctx.pair} — Date : ${ctx.date}\n\nL'utilisateur analyse ${ctx.pair} pour comprendre le contexte de ses paires principales.\n\nDescription du chart : "${obs}"\n\nANALYSE CONTEXTE MACRO :\n1. Quelle est la structure actuelle (HH+HL ou LH+LL) ?\n2. Quel est le biais directionnel dominant ?\n3. Quels sont les niveaux clés a surveiller ?\n4. Implication pour les paires correlees (ex: DXY fort = EURUSD/GBPUSD baissier, XAUUSD baissier) ?\n5. Conclusion : CONTEXTE HAUSSIER / BAISSIER / NEUTRE + impact sur les autres paires`
+      : `Setup : ${ctx.pair} ${ctx.dir} — Session : ${ctx.session} — Date : ${ctx.date} — Mode : ${ctx.mode}\n\nL'utilisateur dit sur le Weekly : "${obs}"\n\nCHALLENGE ETAPE 1 — BIAIS WEEKLY :\n1. La structure (HH+HL ou LH+LL) est-elle correcte sur ce chart ?\n2. Le prix est-il vraiment en Discount ou Premium ? Calcule le midpoint.\n3. La liquidite cible (BSL/SSL) est-elle correctement identifiee ?\n4. Si tu vois quelque chose d'incorrect, dis-le sans menagement.\n5. Conclusion : BIAIS VALIDE / INVALIDE / AMBIGUE`;
+  } else if(step===2){
+    prompt=`Suite — ${ctx.pair} ${ctx.dir}\nBiais Weekly : ${state.aiResponses[1]?.slice(0,200)||'voir etape 1'}\n\nL'utilisateur dit sur le Daily : "${obs}"\n\nCHALLENGE ETAPE 2 — STRUCTURE DAILY :\n1. Le CHoCH decrit est-il une CLOTURE ou une meche ? (meche=invalide)\n2. La structure Daily est-elle dans le meme sens que le Weekly ?\n3. S'il y a CHoCH contraire au Weekly : correction a trader ou inversion ?\n4. Y a-t-il un BOS contre-tendance qui invaliderait le setup ?\n5. Conclusion : STRUCTURE ALIGNEE / CONTRE-TENDANCE / ATTENTION`;
+  } else if(step===3){
+    const obTf=document.getElementById('ob-tf').value;const obType=document.getElementById('ob-type').value;
+    prompt=`Suite — ${ctx.pair} ${ctx.dir}\nContext : ${state.aiResponses[2]?.slice(0,150)||'voir etapes'}\nOB sur : ${obTf} — Type : ${obType}\n\nL'utilisateur decrit l'OB : "${obs}"\n\nCHALLENGE ETAPE 3 — OB + INDUCEMENT :\n1. L'OB est-il sur le BON TF (meme que le BOS/CHoCH createur) ?\n2. L'OB a-t-il cause un BOS ou CHoCH en CLOTURE (pas meche) ?\n3. A-t-il laisse un FVG ? Est-il non-mitigue ?\n4. L'inducement est-il correctement identifie entre le prix et l'OB ?\n5. Y a-t-il un risque de SL entre prix et inducement ? (INTERDIT ABSOLU)\n6. SCORE provisoire : OB(0.25)+FVG(+0.25)+Ind.swepe(+0.25)+Fibo(+0.25)=?\n7. Conclusion : OB VALIDE score X% / OB INVALIDE / SKIP`;
+  } else if(step===4){
+    const entry=parseFloat(document.getElementById('entry-price').value)||0;
+    const sl=parseFloat(document.getElementById('sl-price').value)||0;
+    const tp1=parseFloat(document.getElementById('tp1-price').value)||0;
+    const tp2=parseFloat(document.getElementById('tp2-price').value)||0;
+    const risk=Math.abs(entry-sl);
+    const rrr1=risk>0?(Math.abs(tp1-entry)/risk).toFixed(2):'?';
+    const rrr2=risk>0&&tp2?(Math.abs(tp2-entry)/risk).toFixed(2):'?';
+    prompt=`VERDICT FINAL — ${ctx.pair} ${ctx.dir} — TF entree : ${state.entryTf}\n\nResume :\n- Weekly : ${state.aiResponses[1]?.slice(0,100)||'?'}\n- Daily : ${state.aiResponses[2]?.slice(0,100)||'?'}\n- OB/Inducement : ${state.aiResponses[3]?.slice(0,200)||'?'}\n\nEntree:${entry} SL:${sl} TP1:${tp1} TP2:${tp2}\nRRR TP1: 1:${rrr1} | RRR TP2: 1:${rrr2}\n\nL'utilisateur decrit l'entree ${state.entryTf} : "${obs}"\n\nVERDICT FINAL :\n1. Le CHoCH ${state.entryTf} est-il bien a l'interieur de la zone OB en CLOTURE ?\n2. Le SL est-il correctement place (pas entre prix et inducement) ?\n3. Le RRR est-il >= 1:2 sur TP1 ? (calcule : 1:${rrr1})\n4. SCORE FINAL : de 0.25% a 1.00%\n5. Commence par : VERDICT : TRADE [score X%] ou VERDICT : SKIP [raison] ou VERDICT : ATTENDRE [condition]\n6. Point le plus faible de ce setup`;
+  }
+
+  try{
+    const response=await callClaude(prompt,img);
+    state.aiResponses[step]=response;
+    aiDiv.innerHTML='<div class="ai-response">'+response+'</div>';
+    if(step<4){const nb=document.createElement('div');nb.className='btn-group';nb.innerHTML='<button class="btn btn-primary" onclick="nextStep('+step+')">Etape suivante →</button>';aiDiv.appendChild(nb);}
+    else{parseFinalVerdict(response);}
+  }catch(e){aiDiv.innerHTML='<div class="ai-response" style="color:var(--red)">Erreur : '+e.message+'</div>';}
+}
+
+function nextStep(current){state.currentStep=current+1;showStep(current+1);const card=document.getElementById('step'+(current+1)+'-card');if(card)setTimeout(()=>card.scrollIntoView({behavior:'smooth',block:'start'}),100);}
+
+function parseFinalVerdict(text){
+  const upper=text.toUpperCase();
+  let verdict='wait';
+  if(upper.includes('VERDICT : TRADE')||upper.includes('VERDICT: TRADE'))verdict='trade';
+  else if(upper.includes('VERDICT : SKIP')||upper.includes('VERDICT: SKIP'))verdict='skip';
+  else if(upper.includes('VERDICT : ATTENDRE')||upper.includes('VERDICT: ATTENDRE'))verdict='wait';
+  const match=text.match(/(\d+[,.]?\d*)\s*%/g);
+  let score=0.5;
+  if(match){const nums=match.map(m=>parseFloat(m.replace(',','.'))).filter(n=>n>=0.25&&n<=1.0);if(nums.length)score=nums[nums.length-1];}
+  state.finalVerdict=verdict;state.finalScore=score;
+  document.getElementById('verdict-card').style.display='block';
+  const labels={trade:'TRADE — Setup valide',skip:'SKIP — Ne pas prendre',wait:'ATTENDRE — Conditions pas encore reunies'};
+  document.getElementById('final-verdict').innerHTML='<div class="ai-verdict '+verdict+'">'+labels[verdict]+'</div>';
+  const scores=[{v:0.25,l:'0.25% — OB seul'},{v:0.5,l:'0.50% — + FVG'},{v:0.75,l:'0.75% — + Ind. swepe'},{v:1.0,l:'1.00% — A+'}];
+  document.getElementById('final-score').innerHTML=scores.map(s=>'<span class="score-pill'+(Math.abs(s.v-score)<0.13?' active':'')+'">'+s.l+'</span>').join('');
+  const sdot5=document.getElementById('sdot5');if(sdot5)sdot5.className='step-dot done';
+  setTimeout(()=>document.getElementById('verdict-card').scrollIntoView({behavior:'smooth',block:'start'}),100);
+}
+
+function saveToJournal(decision){
+  const entry={id:Date.now(),date:state.context.date||new Date().toISOString().slice(0,10),pair:state.context.pair,mode:state.context.mode,dir:state.context.dir,session:state.context.session,entryTf:state.entryTf,decision,score:state.finalScore||0.5,verdict:state.finalVerdict,result:'pending',rr:null,entryPrice:document.getElementById('entry-price')?.value,sl:document.getElementById('sl-price')?.value,tp1:document.getElementById('tp1-price')?.value,tp2:document.getElementById('tp2-price')?.value,obType:document.getElementById('ob-type')?.value,obTf:document.getElementById('ob-tf')?.value,aiAnalysis:{weekly:state.aiResponses[1]||'',daily:state.aiResponses[2]||'',ob:state.aiResponses[3]||'',entry:state.aiResponses[4]||''},observations:{weekly:document.getElementById('obs1')?.value||'',daily:document.getElementById('obs2')?.value||'',ob:document.getElementById('obs3')?.value||'',entry:document.getElementById('obs4')?.value||''}};
+  journal.unshift(entry);localStorage.setItem('sd_journal',JSON.stringify(journal));
+  alert('Sauvegarde dans le journal !');
+  resetAnalysis();switchTab('journal',document.querySelectorAll('.tab')[1]);
+}
+
+function resetAnalysis(){
+  state.currentStep=0;state.aiResponses={};state.images={};state.finalScore=null;state.finalVerdict=null;
+  for(let i=1;i<=4;i++){const c=document.getElementById('step'+i+'-card');if(c)c.style.display='none';const ai=document.getElementById('ai'+i);if(ai)ai.innerHTML='';const prev=document.getElementById('prev'+i);if(prev)prev.innerHTML='';const obs=document.getElementById('obs'+i);if(obs)obs.value='';const f=document.getElementById('file'+i);if(f)f.value='';}
+  ['entry-price','sl-price','tp1-price','tp2-price'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('rrr-display').textContent='';
+  document.getElementById('step0-card').style.display='block';
+  document.getElementById('stepsBar').style.display='none';
+  document.getElementById('verdict-card').style.display='none';
+  document.querySelectorAll('#favChips .fav-chip').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('ctx-pair').value='';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function renderJournal(){
+  updateStats();const list=document.getElementById('tradeList');
+  let trades=journal;
+  if(journalFilter!=='all')trades=journal.filter(t=>{if(journalFilter==='reel')return t.mode==='reel';if(journalFilter==='backtest')return t.mode==='backtest';if(journalFilter==='trade')return t.decision==='trade';if(journalFilter==='skip')return t.decision==='skip';if(journalFilter==='win')return t.result==='win';if(journalFilter==='loss')return t.result==='loss';return true;});
+  if(!trades.length){list.innerHTML='<div class="empty">Aucune entree — commence une analyse pour remplir le journal.</div>';return;}
+  list.innerHTML=trades.map(t=>{
+    const idx=journal.indexOf(t);const sc=(parseFloat(t.score)*100).toFixed(0)+'%';const dc=t.dir==='BUY'?'color:var(--green)':'color:var(--red)';const tf=t.entryTf||'M15';
+    return`<div class="trade-row" onclick="toggleDetail(${idx})"><div class="trade-row-header"><span class="trade-pair">${t.pair} <span style="${dc};font-size:11px">${t.dir}</span> <span style="font-size:10px;color:#9ca3af">${tf}</span></span><div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap"><span class="mode-tag ${t.mode}">${t.mode}</span><span class="trade-score">${sc}</span><span class="trade-verdict ${t.result}">${t.result}</span></div></div><div class="trade-meta"><span>${t.date}</span><span>${t.session||''}</span><span>OB ${t.obTf||'—'}</span>${t.rr?'<span>R:R '+t.rr+'</span>':''}<span style="font-weight:500;${t.decision==='trade'?'color:var(--green)':'color:var(--red)'}">${t.decision==='trade'?'Trade pris':'Skip'}</span></div><div class="trade-detail" id="detail-${idx}"><div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;align-items:center"><select onchange="updateResult(${idx},'result',this.value)" style="font-size:11px;padding:4px 6px;border:0.5px solid var(--border);border-radius:4px"><option ${t.result==='pending'?'selected':''} value="pending">En cours</option><option ${t.result==='win'?'selected':''} value="win">Win</option><option ${t.result==='loss'?'selected':''} value="loss">Loss</option><option ${t.result==='be'?'selected':''} value="be">Breakeven</option></select><input type="number" value="${t.rr||''}" placeholder="R:R reel" step="0.1" onchange="updateResult(${idx},'rr',this.value)" style="width:80px;font-size:11px;padding:4px 6px;border:0.5px solid var(--border);border-radius:4px"><button onclick="event.stopPropagation();deleteEntry(${idx})" style="font-size:11px;color:var(--red);background:none;border:none;cursor:pointer;padding:4px 8px">Supprimer</button><button onclick="event.stopPropagation();openPostTrade(${idx})" style="font-size:11px;color:var(--blue);background:none;border:none;cursor:pointer;padding:4px 8px">+ Review post-trade</button></div><div style="font-size:11px;color:#9ca3af;margin-bottom:4px">Analyse IA — Verdict final :</div><div class="trade-ai-text">${t.aiAnalysis?.entry||t.aiAnalysis?.ob||'Aucune analyse IA'}</div>${t.observations?.entry?'<div style="font-size:11px;color:#9ca3af;margin-top:8px;font-style:italic">Observation : '+t.observations.entry+'</div>':''}</div></div>`;
+  }).join('');
+}
+
+function toggleDetail(idx){const d=document.getElementById('detail-'+idx);if(d)d.classList.toggle('show');}
+function updateResult(idx,field,val){journal[idx][field]=val;localStorage.setItem('sd_journal',JSON.stringify(journal));updateStats();}
+function deleteEntry(idx){if(!confirm('Supprimer ?'))return;journal.splice(idx,1);localStorage.setItem('sd_journal',JSON.stringify(journal));renderJournal();}
+function filterJournal(f,btn){journalFilter=f;document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));btn.classList.add('active');renderJournal();}
+
+function updateStats(){
+  const trades=journal.filter(t=>t.decision==='trade');const closed=trades.filter(t=>t.result!=='pending');const wins=closed.filter(t=>t.result==='win');
+  document.getElementById('st-total').textContent=journal.length;
+  document.getElementById('st-wr').textContent=closed.length?Math.round(wins.length/closed.length*100)+'%':'—';
+  document.getElementById('st-aplus').textContent=journal.filter(t=>parseFloat(t.score)>=1.0).length;
+  document.getElementById('st-skips').textContent=journal.filter(t=>t.decision==='skip').length;
+}
+
+function addManualTrade(){
+  const pair=document.getElementById('m-pair').value.trim();if(!pair){alert('Indique une paire.');return;}
+  const entry={id:Date.now(),date:new Date().toISOString().slice(0,10),pair,mode:document.getElementById('m-mode').value,dir:document.getElementById('m-dir').value,session:'',entryTf:document.getElementById('m-tf').value,decision:'trade',score:parseFloat(document.getElementById('m-score').value),result:document.getElementById('m-result').value,rr:document.getElementById('m-rr').value||null,aiAnalysis:{entry:document.getElementById('m-notes').value},observations:{}};
+  journal.unshift(entry);localStorage.setItem('sd_journal',JSON.stringify(journal));
+  document.getElementById('m-notes').value='';document.getElementById('m-pair').value='';
+  renderJournal();
+}
+
+function clearJournal(){if(!confirm('Effacer tout le journal ? Cette action est irreversible.'))return;journal=[];localStorage.setItem('sd_journal',JSON.stringify(journal));renderJournal();}
+
+
+// ═══ CALCULATEUR DE POSITION ═══
+function showPositionCalc(){
+  const s=state.finalScore||0.5;
+  document.getElementById('calc-risk').value=s;
+  document.getElementById('calc-card').style.display='block';
+  calcPosition();
+  document.getElementById('calc-card').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function calcPosition(){
+  const capital=parseFloat(document.getElementById('calc-capital').value)||0;
+  const risk=parseFloat(document.getElementById('calc-risk').value)||0;
+  const sl=parseFloat(document.getElementById('calc-sl-pts').value)||0;
+  const pipVal=parseFloat(document.getElementById('calc-pip').value)||1;
+  const res=document.getElementById('calc-result');
+  if(!capital||!risk||!sl||!pipVal){res.innerHTML='<span style="color:#9ca3af">Remplis tous les champs</span>';return;}
+  const riskAmt=(capital*risk/100);
+  const lots=(riskAmt/(sl*pipVal));
+  res.innerHTML='<span style="font-size:22px;font-weight:500;color:#111">'+lots.toFixed(2)+' lots</span><br><span style="font-size:12px;color:#6b7280">Risque : '+riskAmt.toFixed(2)+'$ sur '+capital.toLocaleString()+'$ ('+risk+'%)</span>';
+}
+
+// ═══ STATS AVANCEES ═══
+function renderAdvancedStats(){
+  const trades=journal.filter(t=>t.decision==='trade');
+  const closed=trades.filter(t=>t.result!=='pending');
+  if(!closed.length){document.getElementById('adv-stats').innerHTML='<div class="empty">Pas encore assez de trades fermes.</div>';return;}
+  function wr(arr){const w=arr.filter(t=>t.result==='win').length;return arr.length?Math.round(w/arr.length*100)+'% ('+w+'/'+arr.length+')':'—';}
+  function avgRR(arr){const rs=arr.filter(t=>t.rr).map(t=>parseFloat(t.rr));return rs.length?(rs.reduce((a,b)=>a+b,0)/rs.length).toFixed(2):'—';}
+  const byPair={};closed.forEach(t=>{if(!byPair[t.pair])byPair[t.pair]=[];byPair[t.pair].push(t);});
+  const byScore={'0.25':[],'0.5':[],'0.75':[],'1.0':[]};closed.forEach(t=>{const k=parseFloat(t.score);const sk=k<=0.25?'0.25':k<=0.5?'0.5':k<=0.75?'0.75':'1.0';if(byScore[sk])byScore[sk].push(t);});
+  const bySession={};closed.forEach(t=>{const s=t.session||'Autre';if(!bySession[s])bySession[s]=[];bySession[s].push(t);});
+  const byTf={};closed.forEach(t=>{const f=t.entryTf||'M15';if(!byTf[f])byTf[f]=[];byTf[f].push(t);});
+  let html='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">';
+  html+='<div class="card" style="margin:0"><div class="card-title" style="margin-bottom:8px">Win rate par paire</div>';
+  Object.entries(byPair).sort((a,b)=>b[1].length-a[1].length).forEach(([p,arr])=>{html+='<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:0.5px solid var(--border);font-size:12px"><span style="font-weight:500">'+p+'</span><span>'+wr(arr)+' · R:R '+avgRR(arr)+'</span></div>';});
+  html+='</div>';
+  html+='<div class="card" style="margin:0"><div class="card-title" style="margin-bottom:8px">Win rate par scoring</div>';
+  const sl={'0.25':'OB seul','0.5':'+FVG','0.75':'+Ind.','1.0':'A+'};
+  Object.entries(byScore).forEach(([s,arr])=>{if(arr.length)html+='<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:0.5px solid var(--border);font-size:12px"><span>'+s+'% — '+sl[s]+'</span><span>'+wr(arr)+'</span></div>';});
+  html+='</div>';
+  html+='<div class="card" style="margin:0"><div class="card-title" style="margin-bottom:8px">Win rate par session</div>';
+  Object.entries(bySession).forEach(([s,arr])=>{html+='<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:0.5px solid var(--border);font-size:12px"><span>'+s+'</span><span>'+wr(arr)+'</span></div>';});
+  html+='</div>';
+  html+='<div class="card" style="margin:0"><div class="card-title" style="margin-bottom:8px">Win rate par TF entree</div>';
+  Object.entries(byTf).forEach(([f,arr])=>{html+='<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:0.5px solid var(--border);font-size:12px"><span>'+f+'</span><span>'+wr(arr)+' · R:R '+avgRR(arr)+'</span></div>';});
+  html+='</div></div>';
+  const byMode={reel:[],backtest:[]};closed.forEach(t=>{if(t.mode==='reel')byMode.reel.push(t);else byMode.backtest.push(t);});
+  html+='<div class="card" style="margin-top:12px"><div class="card-title" style="margin-bottom:8px">Reel vs Backtest</div><div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:0.5px solid var(--border);font-size:12px"><span>Reel</span><span>'+wr(byMode.reel)+' · R:R '+avgRR(byMode.reel)+'</span></div><div style="display:flex;justify-content:space-between;padding:5px 0;font-size:12px"><span>Backtest</span><span>'+wr(byMode.backtest)+' · R:R '+avgRR(byMode.backtest)+'</span></div></div>';
+  document.getElementById('adv-stats').innerHTML=html;
+}
+
+// ═══ POST-TRADE REVIEW ═══
+function openPostTrade(idx){
+  const t=journal[idx];
+  document.getElementById('pt-idx').value=idx;
+  document.getElementById('pt-well').value=t.postWell||'';
+  document.getElementById('pt-better').value=t.postBetter||'';
+  document.getElementById('pt-ai-result').innerHTML='';
+  document.getElementById('pt-modal').style.display='flex';
+}
+function closePostTrade(){document.getElementById('pt-modal').style.display='none';}
+function savePostTrade(){
+  const idx=parseInt(document.getElementById('pt-idx').value);
+  journal[idx].postWell=document.getElementById('pt-well').value;
+  journal[idx].postBetter=document.getElementById('pt-better').value;
+  localStorage.setItem('sd_journal',JSON.stringify(journal));
+  closePostTrade();renderJournal();
+}
+async function reviewWithAI(){
+  const idx=parseInt(document.getElementById('pt-idx').value);
+  const t=journal[idx];
+  const well=document.getElementById('pt-well').value;
+  const better=document.getElementById('pt-better').value;
+  if(!well&&!better){alert('Remplis au moins un champ.');return;}
+  const btn=document.getElementById('pt-ai-btn');btn.textContent='Analyse...';btn.disabled=true;
+  const prompt='Review post-trade — '+t.pair+' '+t.dir+' — Score : '+t.score+'% — Resultat : '+t.result+' (R:R '+(t.rr||'?')+')\n\nAnalyse IA initiale : "'+(t.aiAnalysis?.entry?.slice(0,300)||'?')+'"\n\nCe qui s\'est bien passe : "'+well+'"\nCe que j\'aurais du faire autrement : "'+better+'"\n\nREVIEW :\n1. L\'analyse initiale etait-elle correcte par rapport au resultat ?\n2. Valide les points positifs identifies par le trader\n3. Challenge les points d\'amelioration\n4. Recommandation concrete pour le prochain trade similaire\n5. Note pedagogique /10 (10 = execution parfaite)';
+  try{const resp=await callClaude(prompt,null);document.getElementById('pt-ai-result').innerHTML='<div class="ai-response">'+resp+'</div>';journal[idx].postReview=resp;localStorage.setItem('sd_journal',JSON.stringify(journal));}
+  catch(e){document.getElementById('pt-ai-result').innerHTML='<div style="color:var(--red);font-size:12px">Erreur : '+e.message+'</div>';}
+  btn.textContent='Analyser avec l\'IA';btn.disabled=false;
+}
+
+// ═══ EXPORT CSV ═══
+function exportCSV(){
+  if(!journal.length){alert('Journal vide.');return;}
+  const h=['Date','Paire','Mode','Direction','TF','Score%','Decision','Resultat','RR','Session','OB TF','Observation','Verdict IA'];
+  const rows=journal.map(t=>[t.date||'',t.pair||'',t.mode||'',t.dir||'',t.entryTf||'M15',((parseFloat(t.score)||0)*100).toFixed(0)+'%',t.decision||'',t.result||'',t.rr||'',t.session||'',t.obTf||'','"'+(t.observations?.entry||'').replace(/"/g,"''")+'"','"'+(t.aiAnalysis?.entry||'').slice(0,200).replace(/"/g,"''")+'"']);
+  const csv=[h.join(','),...rows.map(r=>r.join(','))].join('\n');
+  const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='sd_journal_'+new Date().toISOString().slice(0,10)+'.csv';a.click();URL.revokeObjectURL(url);
+}
+
+// ═══ EXPORT / IMPORT JSON ═══
+function exportJSON(){
+  if(!journal.length){alert('Journal vide.');return;}
+  const blob=new Blob([JSON.stringify(journal,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='sd_journal_'+new Date().toISOString().slice(0,10)+'.json';a.click();URL.revokeObjectURL(url);
+}
+function importJSON(input){
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const data=JSON.parse(e.target.result);
+      if(!Array.isArray(data)){alert('Fichier invalide.');return;}
+      if(!confirm('Importer '+data.length+' trades ? Le journal actuel sera remplace.'))return;
+      journal=data;localStorage.setItem('sd_journal',JSON.stringify(journal));renderJournal();renderWRChart();
+      alert('Import reussi — '+data.length+' trades charges.');
+    }catch(err){alert('Erreur lecture JSON : '+err.message);}
+  };reader.readAsText(file);
+  input.value='';
+}
+
+// ═══ WIN RATE CHART ═══
+let wrChartInstance=null;
+function renderWRChart(){
+  const canvas=document.getElementById('wrChart');if(!canvas)return;
+  const trades=journal.filter(t=>t.decision==='trade'&&t.result!=='pending').slice().reverse();
+  if(trades.length<2){
+    const ctx=canvas.getContext('2d');ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle='#9ca3af';ctx.font='12px system-ui';
+    ctx.fillText('Pas encore assez de trades fermes pour afficher la courbe.',10,40);return;
+  }
+  const labels=[],dataWR=[],dataRR=[];
+  trades.forEach((t,i)=>{
+    const slice=trades.slice(0,i+1);
+    const wins=slice.filter(x=>x.result==='win').length;
+    const wr=Math.round(wins/slice.length*100);
+    const rrs=slice.filter(x=>x.rr).map(x=>parseFloat(x.rr));
+    const avgRR=rrs.length?(rrs.reduce((a,b)=>a+b,0)/rrs.length).toFixed(2):null;
+    labels.push(t.pair||('#'+(i+1)));
+    dataWR.push(wr);
+    dataRR.push(avgRR);
+  });
+  if(wrChartInstance)wrChartInstance.destroy();
+  const ctx=canvas.getContext('2d');
+  wrChartInstance=new Chart(ctx,{
+    type:'line',
+    data:{
+      labels,
+      datasets:[
+        {label:'Win Rate %',data:dataWR,borderColor:'#2d7a2d',backgroundColor:'rgba(45,122,45,0.08)',
+         tension:0.3,pointRadius:3,yAxisID:'y'},
+        {label:'R:R moyen',data:dataRR,borderColor:'#1e40af',backgroundColor:'rgba(30,64,175,0.08)',
+         tension:0.3,pointRadius:3,yAxisID:'y2',borderDash:[4,3]},
+      ]
+    },
+    options:{responsive:true,plugins:{legend:{labels:{font:{size:11},boxWidth:20}}},
+      scales:{
+        y:{min:0,max:100,ticks:{font:{size:10},callback:v=>v+'%'},grid:{color:'#f3f4f6'}},
+        y2:{position:'right',min:0,ticks:{font:{size:10},callback:v=>v+'R'},grid:{display:false}},
+        x:{ticks:{font:{size:9},maxRotation:45}}
+      }
+    }
+  });
+}
+
+// ═══ CHECKLIST ═══
+const CHECKLIST_DATA={
+  swing:{
+    '1':[
+      'Structure Weekly : HH+HL (BUY) / LH+LL (SELL)',
+      'CHoCH Weekly en cloture → reevaluer tout le biais',
+      'Structure Daily dans le meme sens que Weekly',
+      'Prochaine liquidite cible notee (BSL/SSL)',
+      'Prix en Discount (<50%) pour BUY / Premium pour SELL',
+      'Paires correlees verifiees (max 2% risque total)',
+    ],
+    '2':[
+      'CHoCH dans la direction du biais — CLOTURE obligatoire',
+      'BOS confirmatoire — CLOTURE + FVG dans le sillage',
+      'BOS contre-tendance Daily = PIEGE → SKIP',
+      'Volatilite anormale (>2%) → skip ou reduire taille',
+      'Pas de news majeures dans l\'heure (NFP/CPI/FOMC)',
+    ],
+    '3a':[
+      'OB marque sur le MEME TF que le BOS/CHoCH createur',
+      'C1 : OB a cause un BOS ou CHoCH en CLOTURE',
+      'C2 : OB laisse un FVG (absent = fort si mouvement pur)',
+      'C3 : Non-mitigue — cloture dedans = mitigue / 2x = invalide',
+      'TYPE 1 : derniere bougie couleur OPPOSEE avant impulsion',
+      'TYPE 2 : bougie avec FVG → FVG = TP1 / OB = Entree',
+    ],
+    '3b':[
+      'Inducement identifie entre prix et OB',
+      'Swepe → entree normale → risque selon scoring',
+      'Non swepe → Option A : attendre le sweep',
+      'Non swepe → Option B : SL sous inducement a 0.5%',
+      'JAMAIS de SL entre le prix et l\'inducement',
+    ],
+    '3c':[
+      'Fibo H1 : 61.8-71% ou 78.6% dans l\'OB = confluence H1',
+      'Fibo M15 : double confluence H1+M15 = setup A+',
+      'Score calcule : 1/4 (0.25%) a 4/4 (1.00% A+)',
+    ],
+    '4':[
+      'Prix revenu dans la zone OB (ne jamais anticiper)',
+      'Pas de cloture H1 sous la basse de l\'OB',
+      'CHoCH M15 forme A L\'INTERIEUR de la zone OB',
+      'Entree a la cloture du CHoCH M15 UNIQUEMENT',
+      'SL sous meche basse OB + 10-15pts buffer',
+      'RRR >= 1:2 calcule / Setup A+ → viser 1:3 ou 1:5',
+      'Taille de position calculee avec formule',
+      'Screenshot pris AVANT l\'entree',
+    ],
+    '5':[
+      'TP1 = inducement / TP2 = liquidite HTF — notes avant',
+      '+1R atteint → SL a breakeven immediatement',
+      'Setup A+ TP2 HTF distant → breakeven a +1.5R',
+      'TP1 atteint → fermer 50% / laisser runner vers TP2',
+      'Max 2% risque simultane (toutes paires)',
+      '2 pertes consecutives → session terminee',
+      'Journal rempli apres chaque trade',
+    ],
+  },
+  day:{
+    '1':[
+      'Structure Daily : HH+HL (BUY) / LH+LL (SELL)',
+      'CHoCH Daily en cloture → reevaluer tout le biais',
+      'Structure H4 dans le meme sens que Daily',
+      'Prochaine liquidite H4 notee (niveau exact)',
+      'Prix en Discount H4 (BUY) ou Premium H4 (SELL)',
+      'Paires correlees verifiees (max 2% risque total)',
+    ],
+    '2':[
+      'CHoCH H1 dans le sens du biais — CLOTURE obligatoire',
+      'BOS H1 confirmatoire — CLOTURE + FVG dans le sillage',
+      'BOS contre-tendance H4 = PIEGE → SKIP',
+      'Volatilite anormale (>2% sur H1) → skip ou -50% taille',
+      'Pas de news majeures dans les 30min (NFP/CPI/FOMC)',
+    ],
+    '3a':[
+      'OB marque sur le MEME TF que le BOS/CHoCH createur',
+      'C1 : OB a cause un BOS ou CHoCH en CLOTURE',
+      'C2 : OB laisse un FVG (absent = fort si mouvement pur)',
+      'C3 : Non-mitigue — cloture dedans = mitigue / 2x = invalide',
+      'TYPE 1 : derniere bougie couleur OPPOSEE avant impulsion',
+      'TYPE 2 : bougie avec FVG → FVG = TP1 / OB = Entree',
+    ],
+    '3b':[
+      'Inducement identifie entre prix et OB',
+      'Swepe → entree normale → risque selon scoring',
+      'Non swepe → Option A : attendre le sweep',
+      'Non swepe → Option B : SL sous inducement a 0.5%',
+      'JAMAIS de SL entre le prix et l\'inducement',
+    ],
+    '3c':[
+      'Fibo H1 : 61.8-71% ou 78.6% dans l\'OB = confluence H1',
+      'Fibo M15 : double confluence H1+M15 = setup A+',
+      'Score calcule : 1/4 (0.25%) a 4/4 (1.00% A+)',
+    ],
+    '4':[
+      'Prix revenu dans la zone OB M15 (ne jamais anticiper)',
+      'Pas de cloture H1 sous la basse de l\'OB',
+      'CHoCH M5 forme A L\'INTERIEUR de la zone OB',
+      'Entree a la cloture du CHoCH M5 UNIQUEMENT',
+      'SL sous meche basse OB + 10-15pts buffer',
+      'RRR >= 1:2 calcule / Setup A+ → viser 1:3 ou 1:5',
+      'Taille de position calculee avec formule',
+      'Screenshot pris AVANT l\'entree',
+    ],
+    '5':[
+      'TP1 = inducement / TP2 = liquidite H4 — notes avant',
+      '+1R atteint → SL a breakeven immediatement',
+      'Setup A+ TP2 HTF distant → breakeven a +1.5R',
+      'TP1 atteint → fermer 50% / laisser runner vers TP2',
+      'Max 2% risque simultane (toutes paires)',
+      '2 pertes consecutives → session terminee',
+      'Fermer TOUT avant 17h00 — pas d\'overnight',
+      'Journal rempli apres chaque trade',
+    ],
+  }
+};
+
+let clState={swing:{},day:{}};
+try{const saved=localStorage.getItem('sd_checklist');if(saved)clState=JSON.parse(saved);}catch(e){}
+
+function renderChecklist(){
+  const modes=['swing','day'];
+  modes.forEach(mode=>{
+    const data=CHECKLIST_DATA[mode];
+    const sections=['1','2','3a','3b','3c','4','5'];
+    const isMulticol=s=>s==='5';
+    sections.forEach(sec=>{
+      const el=document.getElementById('cl-'+mode[0]+'-'+sec);if(!el)return;
+      if(!clState[mode][sec])clState[mode][sec]={};
+      const items=data[sec];
+      el.innerHTML=items.map((item,i)=>{
+        const checked=clState[mode][sec][i]||false;
+        return`<label style="display:flex;align-items:flex-start;gap:8px;padding:5px 0;border-bottom:0.5px solid var(--border);cursor:pointer;font-size:12px;color:#374151">
+          <input type="checkbox" ${checked?'checked':''} onchange="toggleCheck('${mode}','${sec}',${i},this.checked)" style="margin-top:2px;accent-color:#111;flex-shrink:0">
+          <span style="${checked?'text-decoration:line-through;color:#9ca3af':''}">${item}</span>
+        </label>`;
+      }).join('');
+    });
+  });
+}
+
+function toggleCheck(mode,sec,idx,val){
+  if(!clState[mode][sec])clState[mode][sec]={};
+  clState[mode][sec][idx]=val;
+  localStorage.setItem('sd_checklist',JSON.stringify(clState));
+  // update the span style live
+  const spans=document.querySelectorAll(`#cl-${mode[0]}-${sec} label span`);
+  if(spans[idx])spans[idx].style=val?'text-decoration:line-through;color:#9ca3af':'';
+}
+
+function resetChecklist(mode){
+  if(!confirm('Reinitialiser toutes les cases ?'))return;
+  clState[mode]={};localStorage.setItem('sd_checklist',JSON.stringify(clState));renderChecklist();
+}
+
+function switchChecklist(mode,btn){
+  document.getElementById('cl-swing').style.display=mode==='swing'?'block':'none';
+  document.getElementById('cl-day').style.display=mode==='day'?'block':'none';
+  document.querySelectorAll('#tab-checklist .filter-chip').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// ─── Init ───
+// Load Chart.js
+const chartScript=document.createElement('script');
+chartScript.src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js';
+document.head.appendChild(chartScript);
+
+// Apply saved trading mode
+setTradingMode(tradingMode,null);
+
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;document.getElementById('installBanner').classList.add('show');});
+document.getElementById('installBtn').addEventListener('click',async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();const{outcome}=await deferredPrompt.userChoice;if(outcome==='accepted')document.getElementById('installBanner').classList.remove('show');deferredPrompt=null;});
+window.addEventListener('appinstalled',()=>document.getElementById('installBanner').classList.remove('show'));
+</script>
+
+<!-- POST-TRADE REVIEW MODAL -->
+<div id="pt-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center;padding:16px">
+  <div style="background:#fff;border-radius:var(--radius-lg);padding:20px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto">
+    <input type="hidden" id="pt-idx">
+    <div style="font-size:15px;font-weight:500;margin-bottom:16px">Review post-trade</div>
+    <div class="field"><label>Ce qui s'est bien passe</label><textarea id="pt-well" placeholder="Ex: J&#39;ai bien attendu le CHoCH en cloture, l&#39;OB etait propre, le SL etait bien place..."></textarea></div>
+    <div class="field"><label>Ce que j'aurais du faire autrement</label><textarea id="pt-better" placeholder="Ex: J&#39;ai entre trop tot avant le sweep de l&#39;inducement, j&#39;aurais du attendre..."></textarea></div>
+    <div id="pt-ai-result"></div>
+    <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+      <button class="btn btn-primary" id="pt-ai-btn" onclick="reviewWithAI()">Analyser avec l'IA</button>
+      <button class="btn btn-green" onclick="savePostTrade()">Sauvegarder</button>
+      <button class="btn" onclick="closePostTrade()">Fermer</button>
+    </div>
+  </div>
+</div>
+
+
+</body></html>
