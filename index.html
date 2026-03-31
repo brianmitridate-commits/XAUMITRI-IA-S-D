@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)file:///C:/Users/brian/Downloads/index_9.html -->
+<!-- saved from url=(0083)file:///C:/Users/brian/Downloads/S&D%20%E2%80%94%20Avocat%20du%20Diable%20v2_1.html -->
 <html lang="fr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -75,6 +75,8 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#f8f9fa;color:#1a
 .tf-selector{display:flex;gap:6px}
 .tf-btn{padding:5px 12px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;border:0.5px solid var(--border);background:#f9fafb;color:#374151;transition:all .15s}
 .tf-btn.active{background:#111;color:#fff;border-color:#111}
+.htf-btn{padding:5px 12px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;border:0.5px solid var(--border);background:#f9fafb;color:#374151;transition:all .15s}
+.htf-btn.active{background:#111;color:#fff;border-color:#111}
 .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
 .stat-card{background:#f9fafb;border-radius:var(--radius);padding:10px 12px;border:0.5px solid var(--border)}
 .stat-label{font-size:11px;color:#9ca3af;margin-bottom:4px}
@@ -108,8 +110,204 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#f8f9fa;color:#1a
 .install-banner.show{display:flex}
 @media(max-width:640px){.row2,.row3,.row4{grid-template-columns:1fr 1fr}.stats-grid{grid-template-columns:1fr 1fr}.app{padding:10px}}
 @media(max-width:400px){.row2,.row3,.row4{grid-template-columns:1fr}}
+
+/* ═══ JOURNAL DASHBOARD OVERLAY ═══ */
+#journal-overlay{display:none;position:fixed;inset:0;z-index:500;overflow-y:auto;background:#0a0c0f;}
+#journal-overlay.open{display:block;}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#0a0c0f;
+  --bg2:#111318;
+  --bg3:#181c23;
+  --border:#1e2530;
+  --border2:#252d3a;
+  --text:#e8eaf0;
+  --text2:#8b92a5;
+  --text3:#4a5268;
+  --green:#00d68f;
+  --green-bg:rgba(0,214,143,0.08);
+  --green-bd:rgba(0,214,143,0.2);
+  --red:#ff4d6d;
+  --red-bg:rgba(255,77,109,0.08);
+  --red-bd:rgba(255,77,109,0.2);
+  --amber:#ffb347;
+  --amber-bg:rgba(255,179,71,0.08);
+  --amber-bd:rgba(255,179,71,0.2);
+  --blue:#4d9eff;
+  --blue-bg:rgba(77,158,255,0.08);
+  --blue-bd:rgba(77,158,255,0.2);
+  --accent:#00d68f;
+  --radius:8px;
+  --radius-lg:12px;
+}
+
+.journal-overlay body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+/* ── LAYOUT ── */
+.journal-overlay .shell {display:flex;min-height:100vh}
+
+/* ── SIDEBAR ── */
+.journal-overlay .sidebar {width:240px;min-height:100vh;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;z-index:100}
+.journal-overlay .sidebar-logo {padding:24px 20px 20px;border-bottom:1px solid var(--border)}
+.journal-overlay .logo-mark {font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--text);letter-spacing:-.02em}
+.journal-overlay .logo-sub {font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);margin-top:2px;letter-spacing:.08em;text-transform:uppercase}
+.journal-overlay .sidebar-nav {padding:16px 12px;flex:1}
+.journal-overlay .nav-section {font-family:'DM Mono',monospace;font-size:9px;color:var(--text3);letter-spacing:.12em;text-transform:uppercase;padding:0 8px;margin:16px 0 6px}
+.journal-overlay .nav-item {display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:500;color:var(--text2);transition:all .15s;margin-bottom:2px;border:1px solid transparent;text-decoration:none}
+.nav-item:hover{background:var(--bg3);color:var(--text)}
+.journal-overlay .nav-item.active {background:var(--bg3);color:var(--text);border-color:var(--border2)}
+.journal-overlay .nav-icon {width:16px;height:16px;opacity:.7;flex-shrink:0}
+.journal-overlay .nav-badge {margin-left:auto;font-family:'DM Mono',monospace;font-size:10px;background:var(--bg);padding:1px 6px;border-radius:10px;color:var(--text3);border:1px solid var(--border)}
+.journal-overlay .sidebar-bottom {padding:16px;border-top:1px solid var(--border)}
+.journal-overlay .sheets-status {display:flex;align-items:center;gap:8px;font-family:'DM Mono',monospace;font-size:10px;padding:8px 10px;border-radius:6px;background:var(--bg);border:1px solid var(--border)}
+.journal-overlay .status-dot {width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.journal-overlay .status-dot.ok {background:var(--green)}
+.journal-overlay .status-dot.no {background:var(--text3)}
+
+/* ── MAIN ── */
+.journal-overlay .main {margin-left:240px;flex:1;padding:32px 40px;max-width:1200px}
+.journal-overlay .page {display:none}
+.journal-overlay .page.active {display:block}
+
+/* ── PAGE HEADER ── */
+.journal-overlay .page-header {margin-bottom:32px}
+.journal-overlay .page-title {font-size:28px;font-weight:700;color:var(--text);letter-spacing:-.03em;line-height:1.2}
+.journal-overlay .page-meta {font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);margin-top:6px;letter-spacing:.04em}
+
+/* ── STATS ROW ── */
+.journal-overlay .stats-row {display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:28px}
+.journal-overlay .stat {background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px 18px}
+.journal-overlay .stat-label {font-family:'DM Mono',monospace;font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px}
+.journal-overlay .stat-val {font-size:26px;font-weight:700;color:var(--text);letter-spacing:-.03em;line-height:1}
+.journal-overlay .stat-sub {font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);margin-top:4px}
+.journal-overlay .stat.green .stat-val {color:var(--green)}
+.journal-overlay .stat.red .stat-val {color:var(--red)}
+.journal-overlay .stat.amber .stat-val {color:var(--amber)}
+
+/* ── FILTERS ── */
+.journal-overlay .filters {display:flex;gap:8px;align-items:center;margin-bottom:20px;flex-wrap:wrap}
+.journal-overlay .filter-btn {font-family:'DM Mono',monospace;font-size:10px;padding:5px 12px;border-radius:20px;border:1px solid var(--border2);background:transparent;color:var(--text3);cursor:pointer;transition:all .15s;letter-spacing:.04em}
+.filter-btn:hover{border-color:var(--text3);color:var(--text2)}
+.journal-overlay .filter-btn.active {background:var(--text);color:var(--bg);border-color:var(--text)}
+.journal-overlay .filters-right {margin-left:auto;display:flex;gap:8px}
+.journal-overlay .btn-sm {font-family:'DM Mono',monospace;font-size:10px;padding:6px 14px;border-radius:6px;border:1px solid var(--border2);background:var(--bg2);color:var(--text2);cursor:pointer;transition:all .15s;letter-spacing:.04em}
+.btn-sm:hover{border-color:var(--accent);color:var(--accent)}
+.journal-overlay .btn-sm.primary {background:var(--accent);color:var(--bg);border-color:var(--accent);font-weight:600}
+.btn-sm.primary:hover{opacity:.85}
+
+/* ── TRADE TABLE ── */
+.journal-overlay .trade-table {width:100%;border-collapse:collapse}
+.journal-overlay .trade-table th {font-family:'DM Mono',monospace;font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;padding:8px 12px;text-align:left;border-bottom:1px solid var(--border);font-weight:400}
+.journal-overlay .trade-table td {padding:12px 12px;border-bottom:1px solid var(--border);font-size:13px;color:var(--text2);vertical-align:middle}
+.trade-table tr:hover td{background:var(--bg2)}
+.trade-table tr:last-child td{border-bottom:none}
+.journal-overlay .pair-cell {font-weight:600;color:var(--text);font-size:13px;display:flex;align-items:center;gap:8px}
+.journal-overlay .dir-badge {font-family:'DM Mono',monospace;font-size:9px;padding:2px 7px;border-radius:4px;font-weight:500;letter-spacing:.06em}
+.journal-overlay .dir-buy {background:var(--green-bg);color:var(--green);border:1px solid var(--green-bd)}
+.journal-overlay .dir-sell {background:var(--red-bg);color:var(--red);border:1px solid var(--red-bd)}
+.journal-overlay .result-badge {font-family:'DM Mono',monospace;font-size:10px;padding:3px 9px;border-radius:4px;letter-spacing:.04em;display:inline-flex;align-items:center;gap:4px}
+.journal-overlay .result-win {background:var(--green-bg);color:var(--green);border:1px solid var(--green-bd)}
+.journal-overlay .result-loss {background:var(--red-bg);color:var(--red);border:1px solid var(--red-bd)}
+.journal-overlay .result-be {background:var(--bg3);color:var(--text3);border:1px solid var(--border2)}
+.journal-overlay .result-pending {background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-bd)}
+.journal-overlay .result-skip {background:var(--bg3);color:var(--text3);border:1px solid var(--border2)}
+.journal-overlay .score-cell {font-family:'DM Mono',monospace;font-size:11px}
+.journal-overlay .score-aplus {color:var(--amber)}
+.journal-overlay .score-good {color:var(--blue)}
+.journal-overlay .score-low {color:var(--text3)}
+.journal-overlay .mode-tag {font-family:'DM Mono',monospace;font-size:9px;padding:2px 7px;border-radius:4px;letter-spacing:.04em}
+.journal-overlay .mode-reel {background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-bd)}
+.journal-overlay .mode-backtest {background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-bd)}
+.journal-overlay .rr-cell {font-family:'DM Mono',monospace;font-size:12px;font-weight:500}
+.journal-overlay .rr-pos {color:var(--green)}
+.journal-overlay .rr-neg {color:var(--red)}
+.journal-overlay .expand-btn {background:none;border:none;color:var(--text3);cursor:pointer;padding:4px;font-size:11px;transition:color .15s}
+.expand-btn:hover{color:var(--text)}
+
+/* ── TRADE DETAIL ── */
+.journal-overlay .trade-detail-row {display:none;background:var(--bg2)}
+.journal-overlay .trade-detail-row.show {display:table-row}
+.journal-overlay .trade-detail-inner {padding:16px 20px 20px}
+.journal-overlay .detail-grid {display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px}
+.journal-overlay .detail-card {background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px}
+.journal-overlay .detail-card-label {font-family:'DM Mono',monospace;font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px}
+.journal-overlay .detail-card-val {font-size:12px;color:var(--text2);line-height:1.6;white-space:pre-wrap;max-height:120px;overflow-y:auto}
+.journal-overlay .detail-actions {display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.journal-overlay .result-select {font-family:'DM Mono',monospace;font-size:11px;padding:5px 10px;background:var(--bg3);border:1px solid var(--border2);color:var(--text2);border-radius:6px;cursor:pointer}
+.journal-overlay .rr-input {font-family:'DM Mono',monospace;font-size:11px;padding:5px 10px;background:var(--bg3);border:1px solid var(--border2);color:var(--text2);border-radius:6px;width:90px}
+.rr-input:focus,.result-select:focus{outline:none;border-color:var(--accent)}
+.journal-overlay .delete-btn {font-family:'DM Mono',monospace;font-size:10px;padding:5px 12px;border-radius:6px;border:1px solid var(--red-bd);background:var(--red-bg);color:var(--red);cursor:pointer;margin-left:auto}
+.delete-btn:hover{opacity:.8}
+
+/* ── CHART SECTION ── */
+.journal-overlay .chart-section {background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;margin-bottom:20px}
+.journal-overlay .chart-title {font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:16px}
+.journal-overlay .charts-grid {display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.journal-overlay .chart-box {background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:16px}
+
+/* ── STATS AVANCÉES ── */
+.journal-overlay .adv-grid {display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+.journal-overlay .adv-card {background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px}
+.journal-overlay .adv-card-title {font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px}
+.journal-overlay .adv-row {display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border)}
+.adv-row:last-child{border-bottom:none}
+.journal-overlay .adv-row-label {font-size:12px;color:var(--text2)}
+.journal-overlay .adv-row-val {font-family:'DM Mono',monospace;font-size:11px;color:var(--text)}
+
+/* ── SETUP BAR ── */
+.journal-overlay .setup-bar {background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;margin-bottom:24px}
+.journal-overlay .setup-bar-title {font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px}
+.journal-overlay .setup-fields {display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.journal-overlay .setup-field label {font-family:'DM Mono',monospace;font-size:9px;color:var(--text3);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.08em}
+.journal-overlay .setup-field input, .journal-overlay .setup-field select {width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:6px;padding:7px 10px;font-size:12px;font-family:'DM Mono',monospace}
+.setup-field input:focus,.setup-field select:focus{outline:none;border-color:var(--accent)}
+.journal-overlay .setup-field select option {background:var(--bg3)}
+
+/* ── SHEETS CONFIG ── */
+.journal-overlay .config-box {background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;margin-bottom:20px}
+.journal-overlay .config-title {font-size:15px;font-weight:600;color:var(--text);margin-bottom:4px}
+.journal-overlay .config-sub {font-size:12px;color:var(--text3);margin-bottom:16px}
+.journal-overlay .config-input-row {display:flex;gap:10px;align-items:center}
+.journal-overlay .config-input {flex:1;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:6px;padding:8px 12px;font-size:12px;font-family:'DM Mono',monospace}
+.config-input:focus{outline:none;border-color:var(--accent)}
+.journal-overlay .config-steps {margin-top:16px;display:flex;flex-direction:column;gap:10px}
+.journal-overlay .config-step {display:flex;gap:12px;align-items:flex-start}
+.journal-overlay .step-num {width:22px;height:22px;border-radius:50%;background:var(--bg3);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);flex-shrink:0;margin-top:1px}
+.journal-overlay .step-text {font-size:12px;color:var(--text2);line-height:1.6}
+.journal-overlay .step-code {font-family:'DM Mono',monospace;font-size:10px;background:var(--bg3);border:1px solid var(--border);padding:6px 10px;border-radius:4px;color:var(--accent);margin-top:4px;word-break:break-all;cursor:pointer;transition:opacity .15s}
+.step-code:hover{opacity:.8}
+
+/* ── EMPTY ── */
+.journal-overlay .empty {text-align:center;padding:60px 20px;color:var(--text3)}
+.journal-overlay .empty-icon {font-size:32px;margin-bottom:12px;opacity:.4}
+.journal-overlay .empty-text {font-size:14px;font-weight:500;color:var(--text2);margin-bottom:4px}
+.journal-overlay .empty-sub {font-size:12px}
+
+/* ── TOAST ── */
+.journal-overlay .toast {position:fixed;bottom:24px;right:24px;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);padding:12px 18px;font-size:13px;color:var(--text);z-index:1000;transform:translateY(100px);opacity:0;transition:all .3s;font-family:'DM Mono',monospace}
+.journal-overlay .toast.show {transform:translateY(0);opacity:1}
+.journal-overlay .toast.ok {border-color:var(--green-bd);color:var(--green)}
+.journal-overlay .toast.err {border-color:var(--red-bd);color:var(--red)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+.journal-overlay .sidebar {width:100%;min-height:auto;position:relative;flex-direction:row;flex-wrap:wrap}
+.journal-overlay .main {margin-left:0;padding:16px}
+.journal-overlay .stats-row {grid-template-columns:repeat(2,1fr)}
+.journal-overlay .adv-grid, .journal-overlay .charts-grid {grid-template-columns:1fr}
+.journal-overlay .detail-grid {grid-template-columns:1fr}
+.journal-overlay .setup-fields {grid-template-columns:1fr 1fr}
+}
+
 </style>
-<script src="./index_files/chart.umd.min.js.télécharger"></script></head>
+<script src="file:///C:/Users/brian/Downloads/S&amp;D%20%E2%80%94%20Avocat%20du%20Diable%20scalping%20mode%2000h40_files/chart.umd.min.js.t%C3%A9l%C3%A9charger"></script><script src="./index_files/chart.umd.min.js.télécharger"></script></head>
 <body>
 <div class="app">
 
@@ -122,19 +320,21 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#f8f9fa;color:#1a
 <div class="header">
   <div>
     <div class="header-title">S&amp;D — Avocat du Diable</div>
-    <div class="header-sub" id="header-sub">Analyse par captures · Challenge IA · Journal backtest + reel</div>
+    <div class="header-sub" id="header-sub">Scalping · HTF M15 → MTF 5m → LTF 1m · Trades rapides intraday</div>
   </div>
   <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
     <div style="display:flex;gap:4px;background:#f3f4f6;border-radius:8px;padding:3px">
-      <button id="mode-swing" onclick="setTradingMode(&#39;swing&#39;,this)" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;background:#111;color:#fff;transition:all .15s">Swing</button>
-      <button id="mode-day" onclick="setTradingMode(&#39;day&#39;,this)" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;background:transparent;color:#6b7280;transition:all .15s">Day Trading</button>
+      <button id="mode-swing" onclick="setTradingMode(&#39;swing&#39;,this)" style="padding: 5px 12px; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; border: none; background: transparent; color: rgb(107, 114, 128); transition: 0.15s;">Swing</button>
+      <button id="mode-day" onclick="setTradingMode(&#39;day&#39;,this)" style="padding: 5px 12px; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; border: none; background: transparent; color: rgb(107, 114, 128); transition: 0.15s;">Day Trading</button>
+      <button id="mode-scalp" onclick="setTradingMode(&#39;scalp&#39;,this)" style="padding: 5px 12px; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; border: none; background: rgb(17, 17, 17); color: rgb(255, 255, 255); transition: 0.15s;">Scalping</button>
+      <button id="mode-custom" onclick="setTradingMode(&#39;custom&#39;,this)" style="padding: 5px 12px; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; border: none; background: transparent; color: rgb(107, 114, 128); transition: 0.15s;">⚙ Custom</button>
     </div>
     <div class="tab-row">
       <button class="tab active" onclick="switchTab(&#39;analyse&#39;,this)">Analyse</button>
       <button class="tab" onclick="switchTab(&#39;journal&#39;,this)">Journal</button>
       <button class="tab" onclick="switchTab(&#39;watchlist&#39;,this)">Watchlist <span id="wl-badge" style="display:none;background:var(--amber);color:#fff;border-radius:10px;padding:1px 6px;font-size:10px;margin-left:2px">0</span></button>
       <button class="tab" onclick="switchTab(&#39;checklist&#39;,this)">Checklist</button>
-      <button onclick="switchTab(&#39;journal&#39;,document.querySelectorAll(&#39;.tab&#39;)[1]);setTimeout(function(){renderJournal();renderWRChart();},50)" style="padding:6px 14px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;border:0.5px solid #111;background:#111;color:#fff">📓 Mon Journal</button>
+      <button onclick="openJournalDashboard()" style="padding:6px 14px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;border:0.5px solid #111;background:#111;color:#fff">📓 Mon Journal</button>
     </div>
   </div>
 </div>
@@ -190,7 +390,72 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#f8f9fa;color:#1a
       </select>
     </div>
   </div>
-  <div class="btn-group">
+
+  <!-- SCALPING HTF SELECTOR — visible seulement en mode Scalp -->
+  <div id="scalp-htf-row" style="display: block; margin-bottom: 12px;">
+    <div style="background:#fffbeb;border:0.5px solid #fcd34d;border-radius:8px;padding:10px 14px">
+      <div style="font-size:11px;font-weight:600;color:#92400e;margin-bottom:8px">⚡ Scalping — HTF biais au choix</div>
+      <div class="field" style="margin:0">
+        <label style="color:#92400e">HTF biais (choisis avant de demarrer)</label>
+        <div style="display:flex;gap:6px">
+          <button class="htf-btn active" id="scalp-htf-m15" onclick="setScalpHTF(&#39;M15&#39;,this)">M15</button>
+          <button class="htf-btn" id="scalp-htf-m30" onclick="setScalpHTF(&#39;M30&#39;,this)">M30</button>
+          <button class="htf-btn" id="scalp-htf-h1" onclick="setScalpHTF(&#39;H1&#39;,this)">H1</button>
+        </div>
+        <div style="font-size:10px;color:#9ca3af;margin-top:5px">MTF structure = toujours <strong>M5</strong> · LTF execution = toujours <strong>M1</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CUSTOM MODE — 4 TF libres — visible seulement en mode Custom -->
+  <div id="custom-tf-row" style="display: none; margin-bottom: 12px;">
+    <div style="background:#eff6ff;border:0.5px solid #93c5fd;border-radius:8px;padding:10px 14px">
+      <div style="font-size:11px;font-weight:600;color:#1e40af;margin-bottom:8px">⚙ Mode Custom — 4 TF totalement libres</div>
+      <div class="row4">
+        <div class="field" style="margin:0">
+          <label style="color:#1e40af">Etape 1 — HTF biais</label>
+          <select id="custom-tf1">
+            <option value="Weekly">Weekly</option>
+            <option value="Daily">Daily</option>
+            <option value="H4">H4</option>
+            <option value="H1">H1</option>
+            <option value="M30">M30</option>
+            <option value="M15" selected="">M15</option>
+          </select>
+        </div>
+        <div class="field" style="margin:0">
+          <label style="color:#1e40af">Etape 2 — MTF structure</label>
+          <select id="custom-tf2">
+            <option value="Daily">Daily</option>
+            <option value="H4">H4</option>
+            <option value="H1">H1</option>
+            <option value="M30">M30</option>
+            <option value="M15">M15</option>
+            <option value="M5" selected="">M5</option>
+          </select>
+        </div>
+        <div class="field" style="margin:0">
+          <label style="color:#1e40af">Etape 3 — OB/Inducement</label>
+          <select id="custom-tf3" onchange="syncCustomOBTf(this.value)">
+            <option value="H1">H1</option>
+            <option value="M30">M30</option>
+            <option value="M15">M15</option>
+            <option value="M5" selected="">M5</option>
+            <option value="M1">M1</option>
+          </select>
+        </div>
+        <div class="field" style="margin:0">
+          <label style="color:#1e40af">Etape 4 — LTF execution</label>
+          <select id="custom-tf4" onchange="syncCustomEntryTf(this.value)">
+            <option value="M15">M15</option>
+            <option value="M5">M5</option>
+            <option value="M1" selected="">M1</option>
+          </select>
+        </div>
+      </div>
+      <div style="font-size:10px;color:#6b7280;margin-top:6px">L'IA adapte tous ses prompts en fonction de tes TF choisis.</div>
+    </div>
+  </div>
     <button class="btn btn-primary" onclick="startAnalysis()">Demarrer l'analyse →</button>
   </div>
 </div>
@@ -204,7 +469,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#f8f9fa;color:#1a
 </div>
 
 <div class="card" id="step1-card" style="display:none">
-  <div class="card-title"><span class="step-badge active" id="badge1">2</span>Etape 1 — Biais Weekly</div>
+  <div class="card-title"><span class="step-badge active" id="badge1">2</span>Etape 1 — Biais M15 (HTF)</div>
   <div class="img-upload" onclick="document.getElementById(&#39;file1&#39;).click()">
     <input type="file" id="file1" accept="image/*" onchange="previewImg(&#39;file1&#39;,&#39;prev1&#39;,this)">
     <div class="u-icon">+</div><div class="u-title">Capture Weekly</div>
@@ -221,7 +486,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#f8f9fa;color:#1a
 </div>
 
 <div class="card" id="step2-card" style="display:none">
-  <div class="card-title"><span class="step-badge waiting" id="badge2">3</span>Etape 2 — Structure Daily</div>
+  <div class="card-title"><span class="step-badge waiting" id="badge2">3</span>Etape 2 — Structure M5 (MTF)</div>
   <div class="img-upload" onclick="document.getElementById(&#39;file2&#39;).click()">
     <input type="file" id="file2" accept="image/*" onchange="previewImg(&#39;file2&#39;,&#39;prev2&#39;,this)">
     <div class="u-icon">+</div><div class="u-title">Capture Daily</div>
@@ -238,7 +503,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#f8f9fa;color:#1a
 </div>
 
 <div class="card" id="step3-card" style="display:none">
-  <div class="card-title"><span class="step-badge waiting" id="badge3">4</span>Etape 3 — Order Block + Inducement (4H/H1)</div>
+  <div class="card-title"><span class="step-badge waiting" id="badge3">4</span>Etape 3 — Order Block + Inducement (M5)</div>
   <div class="img-upload" onclick="document.getElementById(&#39;file3&#39;).click()">
     <input type="file" id="file3" accept="image/*" onchange="previewImg(&#39;file3&#39;,&#39;prev3&#39;,this)">
     <div class="u-icon">+</div><div class="u-title">Capture 4H ou H1</div>
@@ -248,7 +513,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#f8f9fa;color:#1a
   <div class="row2" style="margin-top:12px">
     <div class="field">
       <label>TF de l'OB</label>
-      <select id="ob-tf"><option>4H</option><option>H1</option><option>4H + H1</option></select>
+      <select id="ob-tf"><option>M1</option><option>M5</option><option>M15</option><option>M30</option><option>H1</option><option>4H</option><option>H1 + M15</option><option>4H + H1</option></select>
     </div>
     <div class="field">
       <label>Type d'OB</label>
@@ -276,14 +541,14 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#f8f9fa;color:#1a
     <span class="step-badge waiting" id="badge4">5</span>
     Etape 4 — Entree
     <div class="tf-selector" id="entryTfSelector">
-      <button class="tf-btn active" onclick="setEntryTf(this.textContent,this)">M15</button>
-      <button class="tf-btn" onclick="setEntryTf(this.textContent,this)">M5</button>
+      <button class="tf-btn active" onclick="setEntryTf(this.textContent,this)">M1</button>
+      <button class="tf-btn" onclick="setEntryTf(this.textContent,this)">M1</button>
     </div>
   </div>
   <div class="img-upload" onclick="document.getElementById(&#39;file4&#39;).click()">
     <input type="file" id="file4" accept="image/*" onchange="previewImg(&#39;file4&#39;,&#39;prev4&#39;,this)">
     <div class="u-icon">+</div>
-    <div class="u-title" id="entryImgTitle">Capture M15</div>
+    <div class="u-title" id="entryImgTitle">Capture M1</div>
     <div class="u-hint">Clique / glisse / ou Ctrl+V pour coller</div>
   </div>
   <div id="prev4"></div>
@@ -395,6 +660,8 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#f8f9fa;color:#1a
   <div style="display:flex;gap:4px;background:#f3f4f6;border-radius:8px;padding:3px;width:fit-content;margin-bottom:14px">
     <button id="wl-tab-swing" onclick="switchWatchlistTab(&#39;swing&#39;)" style="padding:5px 14px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;background:#111;color:#fff;transition:all .15s">📈 Swing</button>
     <button id="wl-tab-day" onclick="switchWatchlistTab(&#39;day&#39;)" style="padding:5px 14px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;background:transparent;color:#6b7280;transition:all .15s">⚡ Day Trading</button>
+    <button id="wl-tab-scalp" onclick="switchWatchlistTab(&#39;scalp&#39;)" style="padding:5px 14px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;background:transparent;color:#6b7280;transition:all .15s">⚡ Scalping</button>
+    <button id="wl-tab-custom" onclick="switchWatchlistTab(&#39;custom&#39;)" style="padding:5px 14px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;background:transparent;color:#6b7280;transition:all .15s">⚙ Custom</button>
   </div>
   <div id="watchlist-empty" class="empty" style="display:none">
     <div style="font-size:32px;margin-bottom:8px">⏸</div>
@@ -408,12 +675,12 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#f8f9fa;color:#1a
 <div id="tab-checklist" style="display:none">
   <div style="display:flex;gap:6px;margin-bottom:14px;align-items:center;flex-wrap:wrap">
     <span style="font-size:11px;color:#9ca3af">Mode checklist :</span>
-    <button class="filter-chip active" id="cl-swing-btn" onclick="switchChecklist(&#39;swing&#39;,this)">Swing Trading</button>
-    <button class="filter-chip" id="cl-day-btn" onclick="switchChecklist(&#39;day&#39;,this)">Day Trading</button>
+    <button class="filter-chip" id="cl-swing-btn" onclick="switchChecklist(&#39;swing&#39;,this)">Swing Trading</button>
+    <button class="filter-chip active" id="cl-day-btn" onclick="switchChecklist(&#39;day&#39;,this)">Day Trading</button>
   </div>
 
   <!-- SWING CHECKLIST -->
-  <div id="cl-swing" style="display: block;">
+  <div id="cl-swing" style="display: none;">
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
     <div class="card" style="margin:0">
       <div class="card-title" style="color:var(--blue)">01 — BIAIS WEEKLY / DAILY</div>
@@ -456,7 +723,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#f8f9fa;color:#1a
   </div>
 
   <!-- DAY TRADING CHECKLIST -->
-  <div id="cl-day" style="display:none">
+  <div id="cl-day" style="display: block;">
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
     <div class="card" style="margin:0">
       <div class="card-title" style="color:var(--green)">01 — BIAIS DAILY / H4 (07h00)</div>
@@ -500,7 +767,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#f8f9fa;color:#1a
   </div>
 </div>
 
-</div>
+
 <script>
 const SD_SYSTEM=`Tu es un trader senior specialise en Supply & Demand / ICT / SMC. Tu joues le role d'un mentor : rigoureux sur les vraies erreurs, mais qui valide franchement ce qui est correct.
 
@@ -550,6 +817,17 @@ let journalFilter='all';
 if(state.apiKey){document.getElementById('apiKey').value=state.apiKey;document.getElementById('apiStatus').textContent='Configuree';document.getElementById('apiStatus').className='api-status ok';}
 document.getElementById('ctx-date').value=new Date().toISOString().slice(0,10);
 
+// Init mode UI on load
+(function(){
+  var m=tradingMode;
+  ['swing','day','scalp','custom'].forEach(function(t){
+    var el=document.getElementById('mode-'+t);
+    if(el){el.style.background=m===t?'#111':'transparent';el.style.color=m===t?'#fff':'#6b7280';}
+  });
+  var sr=document.getElementById('scalp-htf-row');if(sr)sr.style.display=m==='scalp'?'block':'none';
+  var cr=document.getElementById('custom-tf-row');if(cr)cr.style.display=m==='custom'?'block':'none';
+})();
+
 ['entry-price','sl-price','tp1-price'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('input',calcRRR);});
 
 function calcRRR(){
@@ -570,34 +848,96 @@ const TF_CONFIG={
          s4label:'M15',s4label2:'M5',sub:'Analyse par captures · Challenge IA · Journal backtest + reel'},
   day:{biais:'Daily / H4',structure:'H1 / M30',ob:'M15 / M5',entry:'M5 / M1',
        step1:'Biais Daily/H4',step2:'Structure H1/M30',step3:'Order Block + Inducement (M15/M5)',step4:'Entree',
-       s4label:'M5',s4label2:'M1',sub:'Day Trading · Sessions Londres + Overlap · Fermer avant 17h00'}
+       s4label:'M5',s4label2:'M1',sub:'Day Trading · Sessions Londres + Overlap · Fermer avant 17h00'},
+  scalp:{biais:'M15',structure:'M5',ob:'M5 / M1',entry:'M1',
+         step1:'Biais M15 (HTF)',step2:'Structure M5 (MTF)',step3:'Order Block + Inducement (M5)',step4:'Entree M1 (LTF)',
+         s4label:'M1',s4label2:'M1',sub:'Scalping \u00b7 HTF 15m \u2192 MTF 5m \u2192 LTF 1m \u00b7 Trades rapides intraday'},
+  custom:{biais:'Custom',structure:'Custom',ob:'Custom',entry:'Custom',
+          step1:'Biais (HTF)',step2:'Structure (MTF)',step3:'Order Block + Inducement',step4:'Entree (LTF)',
+          s4label:'M1',s4label2:'M5',sub:'Mode Custom \u00b7 4 TF totalement libres \u00b7 L\'IA adapte tous ses prompts'}
 };
+
+let scalpHTF='M15'; // HTF selectionne en mode scalp (M15/M30/H1)
+
+function setScalpHTF(tf,btn){
+  scalpHTF=tf;
+  ['m15','m30','h1'].forEach(function(t){
+    var el=document.getElementById('scalp-htf-'+t);
+    if(el)el.classList.toggle('active',t===tf.toLowerCase());
+  });
+  var hs=document.getElementById('header-sub');
+  if(hs)hs.textContent='Scalping \u00b7 HTF '+tf+' \u2192 MTF 5m \u2192 LTF 1m \u00b7 Trades rapides intraday';
+}
+
+function syncCustomOBTf(val){
+  var sel=document.getElementById('ob-tf');if(sel)sel.value=val;
+}
+
+function syncCustomEntryTf(val){
+  state.entryTf=val;
+  document.querySelectorAll('.tf-btn').forEach(function(b){b.textContent=val;});
+  var et=document.getElementById('entryImgTitle');if(et)et.textContent='Capture '+val;
+  // Update header sub
+  var t1=document.getElementById('custom-tf1');var hs=document.getElementById('header-sub');
+  if(hs)hs.textContent='Mode Custom \u00b7 '+(t1?t1.value:'HTF')+' \u2192 MTF \u2192 '+val+' \u00b7 4 TF libres';
+}
 
 function setTradingMode(mode,btn){
   tradingMode=mode;
   localStorage.setItem('sd_tradingmode',mode);
-  document.getElementById('mode-swing').style.background=mode==='swing'?'#111':'transparent';
-  document.getElementById('mode-swing').style.color=mode==='swing'?'#fff':'#6b7280';
-  document.getElementById('mode-day').style.background=mode==='day'?'#111':'transparent';
-  document.getElementById('mode-day').style.color=mode==='day'?'#fff':'#6b7280';
-  const cfg=TF_CONFIG[mode];
-  document.getElementById('header-sub').textContent=cfg.sub;
+  // Update all mode buttons
+  ['swing','day','scalp','custom'].forEach(function(m){
+    var el=document.getElementById('mode-'+m);
+    if(el){el.style.background=mode===m?'#111':'transparent';el.style.color=mode===m?'#fff':'#6b7280';}
+  });
+  // Show/hide scalp HTF selector
+  var scalpRow=document.getElementById('scalp-htf-row');
+  if(scalpRow)scalpRow.style.display=mode==='scalp'?'block':'none';
+  // Show/hide custom TF dropdowns
+  var customRow=document.getElementById('custom-tf-row');
+  if(customRow)customRow.style.display=mode==='custom'?'block':'none';
+
+  const cfg=TF_CONFIG[mode]||TF_CONFIG['swing'];
+  const hs=document.getElementById('header-sub');
+  if(hs){
+    if(mode==='scalp'){hs.textContent='Scalping \u00b7 HTF '+scalpHTF+' \u2192 MTF 5m \u2192 LTF 1m \u00b7 Trades rapides intraday';}
+    else if(mode==='custom'){
+      var t1=document.getElementById('custom-tf1');var t4=document.getElementById('custom-tf4');
+      hs.textContent='Mode Custom \u00b7 '+(t1?t1.value:'HTF')+' \u2192 MTF \u2192 '+(t4?t4.value:'LTF')+' \u00b7 4 TF libres';
+    } else {hs.textContent=cfg.sub;}
+  }
   // Update step labels
-  const s1=document.querySelector('#step1-card .card-title');
-  const s2=document.querySelector('#step2-card .card-title');
-  const s3=document.querySelector('#step3-card .card-title');
-  if(s1)s1.innerHTML='<span class="step-badge active" id="badge1">2</span>Etape 1 — '+cfg.step1;
-  if(s2)s2.innerHTML='<span class="step-badge waiting" id="badge2">3</span>Etape 2 — '+cfg.step2;
-  if(s3)s3.innerHTML='<span class="step-badge waiting" id="badge3">4</span>Etape 3 — '+cfg.step3;
+  var s1=document.querySelector('#step1-card .card-title');
+  var s2=document.querySelector('#step2-card .card-title');
+  var s3=document.querySelector('#step3-card .card-title');
+  if(mode==='custom'){
+    var tf1=document.getElementById('custom-tf1');var tf2=document.getElementById('custom-tf2');var tf3=document.getElementById('custom-tf3');
+    if(s1)s1.innerHTML='<span class="step-badge active" id="badge1">2</span>Etape 1 \u2014 Biais '+(tf1?tf1.value:'HTF');
+    if(s2)s2.innerHTML='<span class="step-badge waiting" id="badge2">3</span>Etape 2 \u2014 Structure '+(tf2?tf2.value:'MTF');
+    if(s3)s3.innerHTML='<span class="step-badge waiting" id="badge3">4</span>Etape 3 \u2014 Order Block + Inducement '+(tf3?tf3.value:'');
+  } else {
+    if(s1)s1.innerHTML='<span class="step-badge active" id="badge1">2</span>Etape 1 \u2014 '+cfg.step1;
+    if(s2)s2.innerHTML='<span class="step-badge waiting" id="badge2">3</span>Etape 2 \u2014 '+cfg.step2;
+    if(s3)s3.innerHTML='<span class="step-badge waiting" id="badge3">4</span>Etape 3 \u2014 '+cfg.step3;
+  }
   // Update entry TF buttons
   document.querySelectorAll('.tf-btn').forEach((b,i)=>{b.textContent=i===0?cfg.s4label:cfg.s4label2;});
   const et=document.getElementById('entryImgTitle');if(et)et.textContent='Capture '+cfg.s4label;
   state.entryTf=cfg.s4label;
-  // Sync checklist tabs
-  document.getElementById('cl-swing-btn').classList.toggle('active',mode==='swing');
-  document.getElementById('cl-day-btn').classList.toggle('active',mode==='day');
-  document.getElementById('cl-swing').style.display=mode==='swing'?'block':'none';
-  document.getElementById('cl-day').style.display=mode==='day'?'block':'none';
+  // Set default OB TF per mode
+  var obTfSel=document.getElementById('ob-tf');
+  if(obTfSel){
+    if(mode==='scalp')obTfSel.value='M5';
+    else if(mode==='custom'){var tf3=document.getElementById('custom-tf3');if(tf3)obTfSel.value=tf3.value;}
+    else if(mode==='day')obTfSel.value='M15';
+    else obTfSel.value='H1';
+  }
+  // Sync checklist tabs — scalp + custom use day checklist
+  const clMode=(mode==='scalp'||mode==='custom')?'day':mode;
+  const clsb=document.getElementById('cl-swing-btn');if(clsb)clsb.classList.toggle('active',clMode==='swing');
+  const cldb=document.getElementById('cl-day-btn');if(cldb)cldb.classList.toggle('active',clMode==='day');
+  const cls=document.getElementById('cl-swing');if(cls)cls.style.display=clMode==='swing'?'block':'none';
+  const cld=document.getElementById('cl-day');if(cld)cld.style.display=clMode==='day'?'block':'none';
 }
 
 function switchTab(tab,btn){
@@ -611,10 +951,10 @@ function switchTab(tab,btn){
   if(tab==='checklist')renderChecklist();
   if(tab==='watchlist'){
     watchlistModeFilter=tradingMode;
-    const sw=document.getElementById('wl-tab-swing');
-    const dy=document.getElementById('wl-tab-day');
-    if(sw){sw.style.background=tradingMode==='swing'?'#111':'transparent';sw.style.color=tradingMode==='swing'?'#fff':'#6b7280';}
-    if(dy){dy.style.background=tradingMode==='day'?'#111':'transparent';dy.style.color=tradingMode==='day'?'#fff':'#6b7280';}
+    ['swing','day','scalp','custom'].forEach(function(m){
+      var el=document.getElementById('wl-tab-'+m);
+      if(el){el.style.background=tradingMode===m?'#111':'transparent';el.style.color=tradingMode===m?'#fff':'#6b7280';}
+    });
     renderWatchlist();
   }
 }
@@ -647,7 +987,31 @@ document.addEventListener('paste',e=>{
   }
 });
 
-function startAnalysis(){const pair=document.getElementById('ctx-pair').value.trim();if(!pair){alert('Choisis ou tape une paire.');return;}state.context={pair,mode:document.getElementById('ctx-mode').value,dir:document.getElementById('ctx-dir').value,date:document.getElementById('ctx-date').value,session:document.getElementById('ctx-session').value};state.currentStep=1;state.aiResponses={};state.images={};document.getElementById('step0-card').style.display='none';document.getElementById('stepsBar').style.display='flex';showStep(1);}
+function startAnalysis(){
+  const pair=document.getElementById('ctx-pair').value.trim();if(!pair){alert('Choisis ou tape une paire.');return;}
+  const customTFs=tradingMode==='custom'?{
+    tf1:document.getElementById('custom-tf1')?.value||'HTF',
+    tf2:document.getElementById('custom-tf2')?.value||'MTF',
+    tf3:document.getElementById('custom-tf3')?.value||'M5',
+    tf4:document.getElementById('custom-tf4')?.value||'M1'
+  }:null;
+  state.context={pair,mode:document.getElementById('ctx-mode').value,dir:document.getElementById('ctx-dir').value,date:document.getElementById('ctx-date').value,session:document.getElementById('ctx-session').value,scalpHTF:scalpHTF,customTFs:customTFs};
+  state.currentStep=1;state.aiResponses={};state.images={};
+  // Update step labels for custom mode with chosen TFs
+  if(tradingMode==='custom'&&customTFs){
+    const s1=document.querySelector('#step1-card .card-title');const s2=document.querySelector('#step2-card .card-title');const s3=document.querySelector('#step3-card .card-title');
+    if(s1)s1.innerHTML='<span class="step-badge active" id="badge1">2</span>Etape 1 \u2014 Biais '+customTFs.tf1;
+    if(s2)s2.innerHTML='<span class="step-badge waiting" id="badge2">3</span>Etape 2 \u2014 Structure '+customTFs.tf2;
+    if(s3)s3.innerHTML='<span class="step-badge waiting" id="badge3">4</span>Etape 3 \u2014 OB + Inducement '+customTFs.tf3;
+    const et=document.getElementById('entryImgTitle');if(et)et.textContent='Capture '+customTFs.tf4;
+    state.entryTf=customTFs.tf4;
+    // Update entry TF buttons
+    document.querySelectorAll('.tf-btn').forEach((b,i)=>{b.textContent=i===0?customTFs.tf4:customTFs.tf4;});
+  }
+  document.getElementById('step0-card').style.display='none';
+  document.getElementById('stepsBar').style.display='flex';
+  showStep(1);
+}
 
 function showStep(n){for(let i=1;i<=4;i++){const c=document.getElementById('step'+i+'-card');if(c)c.style.display=i<=n?'block':'none';}document.getElementById('verdict-card').style.display='none';for(let i=1;i<=5;i++){const d=document.getElementById('sdot'+i);if(d)d.className='step-dot'+(i<n?' done':i===n?' active':'');}for(let i=1;i<=4;i++){const b=document.getElementById('badge'+i);if(!b)continue;b.className='step-badge'+(i<n?' done':i===n?'':' waiting');b.textContent=i<n?'✓':(i+1).toString();}}
 
@@ -668,16 +1032,38 @@ async function analyzeStep(step){
   aiDiv.innerHTML='<div class="ai-response loading"><span class="spin">⊙</span> L\'IA analyse ton chart...</div>';
   const ctx=state.context;const img=state.images['file'+step]||null;let prompt='';
 
+  const cfg=TF_CONFIG[tradingMode]||TF_CONFIG['swing'];
+  const cTFs=ctx.customTFs||null; // custom TF config
+  const htf=tradingMode==='scalp'?(ctx.scalpHTF||scalpHTF||'M15'):(cTFs?cTFs.tf1:(cfg.biais.split('/')[0].trim()));
+
   if(step===1){
     const isContext = ctx.dir === 'CONTEXT';
-    prompt=isContext
-      ? `Analyse de contexte macro — ${ctx.pair} — Date : ${ctx.date}\n\nL'utilisateur analyse ${ctx.pair} pour comprendre le contexte de ses paires principales.\n\nDescription du chart : "${obs}"\n\nANALYSE CONTEXTE MACRO :\n1. Quelle est la structure actuelle (HH+HL ou LH+LL) ?\n2. Quel est le biais directionnel dominant ?\n3. Quels sont les niveaux clés a surveiller ?\n4. Implication pour les paires correlees (ex: DXY fort = EURUSD/GBPUSD baissier, XAUUSD baissier) ?\n5. Conclusion : CONTEXTE HAUSSIER / BAISSIER / NEUTRE + impact sur les autres paires`
-      : `ETAPE 1 — BIAIS — ${ctx.pair} ${ctx.dir} | ${ctx.session} | ${ctx.date}\n\nLecture du trader : "${obs}"\n\nANALYSE BIAIS :\n- Valide ou corrige la structure (HH+HL ou LH+LL)\n- Confirme ou corrige le positionnement Discount/Premium\n- Valide ou corrige la liquidite cible (BSL/SSL)\n- Si l'image est peu lisible, dis-le et base-toi sur la description\nSi le biais est correct dans sa logique globale, valide-le clairement meme si tu as une nuance.`;
+    if(isContext){
+      prompt=`Analyse de contexte macro — ${ctx.pair} — Date : ${ctx.date}\n\nDescription : "${obs}"\n\nANALYSE CONTEXTE MACRO :\n1. Structure actuelle (HH+HL ou LH+LL) ?\n2. Biais directionnel dominant ?\n3. Niveaux cles a surveiller ?\n4. Implications pour paires correlees ?\n5. Conclusion : CONTEXTE HAUSSIER / BAISSIER / NEUTRE`;
+    } else if(tradingMode==='scalp'){
+      prompt=`ETAPE 1 — BIAIS ${htf} (HTF SCALP) — ${ctx.pair} ${ctx.dir} | ${ctx.session} | ${ctx.date}\n\nLecture du trader sur le ${htf} : "${obs}"\n\nANALYSE BIAIS ${htf} (HTF SCALP) :\n- Valide la structure ${htf} (HH+HL ou LH+LL)\n- Confirme le positionnement Discount/Premium sur le range ${htf}\n- Identifie la prochaine liquidite cible (BSL/SSL visible sur ${htf})\n- Verifie la coherence avec le biais intraday (pas de scalp BUY dans un downtrend ${htf} fort)\nFLOW SCALP : Biais ${htf} → Structure M5 → OB M5 → Entree M1\nPRECISION SCALP : les structures cassent vite sur ${htf}, sois attentif aux faux CHoCH en meche.`;
+    } else if(tradingMode==='custom'&&cTFs){
+      prompt=`ETAPE 1 — BIAIS ${cTFs.tf1} (HTF) — ${ctx.pair} ${ctx.dir} | ${ctx.session} | ${ctx.date}\n\nLecture du trader sur le ${cTFs.tf1} : "${obs}"\n\nFLOW CHOISI : ${cTFs.tf1} → ${cTFs.tf2} → ${cTFs.tf3} → ${cTFs.tf4}\n\nANALYSE BIAIS ${cTFs.tf1} :\n- Valide ou corrige la structure (HH+HL ou LH+LL) sur le ${cTFs.tf1}\n- Confirme ou corrige le positionnement Discount/Premium\n- Valide ou corrige la liquidite cible (BSL/SSL)\n- Si l'image est peu lisible, dis-le et base-toi sur la description`;
+    } else {
+      prompt=`ETAPE 1 — BIAIS ${cfg.biais.split('/')[0].trim()} — ${ctx.pair} ${ctx.dir} | ${ctx.session} | ${ctx.date}\n\nLecture du trader : "${obs}"\n\nANALYSE BIAIS :\n- Valide ou corrige la structure (HH+HL ou LH+LL)\n- Confirme ou corrige le positionnement Discount/Premium\n- Valide ou corrige la liquidite cible (BSL/SSL)\n- Si l'image est peu lisible, dis-le et base-toi sur la description`;
+    }
   } else if(step===2){
-    prompt=`ETAPE 2 — STRUCTURE DAILY — ${ctx.pair} ${ctx.dir}\nContexte biais : ${state.aiResponses[1]?.slice(0,200)||'voir etape 1'}\n\nLecture du trader : "${obs}"\n\nANALYSE STRUCTURE :\n- Si le trader decrit un CHoCH en corps de bougie, valide-le si la logique est coherente\n- Un CHoCH Daily contraire au Weekly = correction normale, pas une erreur en soi\n- Verifie si le BOS est confirmatoire (cloture + FVG dans le sillage)\n- Un BOS contre-tendance HTF = piege -> signale-le clairement\nValide franchement si la structure est bien lue, meme si tu as une nuance.`;
+    if(tradingMode==='scalp'){
+      prompt=`ETAPE 2 — STRUCTURE M5 (MTF) — ${ctx.pair} ${ctx.dir}\nBiais ${htf} : ${state.aiResponses[1]?.slice(0,200)||'voir etape 1'}\n\nLecture du trader sur le M5 : "${obs}"\n\nFLOW SCALP : Biais ${htf} → Structure M5 → OB M5 → Entree M1\n\nANALYSE STRUCTURE M5 (MTF SCALP) :\n- Valide le CHoCH M5 dans le sens du biais ${htf} — CLOTURE obligatoire (meche seule = invalide)\n- Verifie que la structure M5 est alignee avec le ${htf}\n- Un CHoCH M5 contraire au ${htf} = correction courte normale, pas un signal\n- BOS M5 confirmatoire = cloture + FVG dans le sillage\nRAPIDITE SCALP : la structure M5 peut etre effacee en quelques bougies, sois rigoureux.`;
+    } else if(tradingMode==='custom'&&cTFs){
+      prompt=`ETAPE 2 — STRUCTURE ${cTFs.tf2} (MTF) — ${ctx.pair} ${ctx.dir}\nContexte biais ${cTFs.tf1} : ${state.aiResponses[1]?.slice(0,200)||'voir etape 1'}\n\nFLOW CHOISI : ${cTFs.tf1} → ${cTFs.tf2} → ${cTFs.tf3} → ${cTFs.tf4}\n\nLecture du trader sur le ${cTFs.tf2} : "${obs}"\n\nANALYSE STRUCTURE ${cTFs.tf2} :\n- Valide le CHoCH en corps de bougie dans le sens du biais ${cTFs.tf1} — CLOTURE obligatoire\n- Verifie si le BOS est confirmatoire (cloture + FVG dans le sillage)\n- Un BOS contre-tendance HTF = piege → signale-le clairement`;
+    } else {
+      prompt=`ETAPE 2 — STRUCTURE ${cfg.biais.split('/')[1]?.trim()||cfg.structure} — ${ctx.pair} ${ctx.dir}\nContexte biais : ${state.aiResponses[1]?.slice(0,200)||'voir etape 1'}\n\nLecture du trader : "${obs}"\n\nANALYSE STRUCTURE :\n- Valide le CHoCH en corps de bougie si logique coherente\n- Verifie si le BOS est confirmatoire (cloture + FVG dans le sillage)\n- Un BOS contre-tendance HTF = piege → signale-le clairement`;
+    }
   } else if(step===3){
     const obTf=document.getElementById('ob-tf').value;const obType=document.getElementById('ob-type').value;
-    prompt=`ETAPE 3 — ORDER BLOCK + INDUCEMENT — ${ctx.pair} ${ctx.dir}\nOB TF : ${obTf} | Type : ${obType}\nContexte : ${state.aiResponses[2]?.slice(0,150)||'voir etapes'}\n\nLecture du trader : "${obs}"\n\nANALYSE OB + INDUCEMENT :\n- Verifie les 3 conditions OB (bon TF / cause BOS-CHoCH cloture / non-mitigue)\n- Verifie la presence du FVG et de l'inducement\n- Si les conditions sont remplies, valide le score clairement\n- Corrige fermement SEULEMENT si une regle absolue est violee (mauvais TF, OB mitigue, SL entre prix et inducement)\nSCORE provisoire : calcule en additionnant les elements valides (0.25 a 1.00%).`;
+    if(tradingMode==='scalp'){
+      prompt=`ETAPE 3 — ORDER BLOCK + INDUCEMENT ${obTf||'M5'} — ${ctx.pair} ${ctx.dir}\nOB TF : ${obTf} | Type : ${obType}\nContexte : ${state.aiResponses[2]?.slice(0,150)||'voir etapes'}\n\nFLOW SCALP : Biais ${htf} → Structure M5 → OB ${obTf||'M5'} → Entree M1\n\nLecture du trader : "${obs}"\n\nANALYSE OB + INDUCEMENT (SCALP) :\n- OB sur le ${obTf||'M5'} (ne pas prendre un OB HTF pour entrer en M1)\n- Verifie les 3 conditions : cause BOS/CHoCH en CLOTURE + FVG + non-mitigue\n- Inducement clair entre prix et OB (equal lows/highs)\n- ATTENTION SCALP : les OB sont petits et rapides — zone precise, pas d'approximation\n- SL obligatoirement sous/sur la meche extreme de l'OB + 3-5pts buffer\nSCORE provisoire : 0.25 a 1.00%`;
+    } else if(tradingMode==='custom'&&cTFs){
+      prompt=`ETAPE 3 — ORDER BLOCK + INDUCEMENT ${cTFs.tf3} — ${ctx.pair} ${ctx.dir}\nOB TF : ${obTf||cTFs.tf3} | Type : ${obType}\nContexte : ${state.aiResponses[2]?.slice(0,150)||'voir etapes'}\n\nFLOW CHOISI : ${cTFs.tf1} → ${cTFs.tf2} → ${cTFs.tf3} → ${cTFs.tf4}\n\nLecture du trader : "${obs}"\n\nANALYSE OB + INDUCEMENT ${cTFs.tf3} :\n- OB sur le ${cTFs.tf3} (meme TF que le BOS/CHoCH qui l'a cree)\n- Verifie les 3 conditions : cause BOS/CHoCH en CLOTURE + FVG + non-mitigue\n- Inducement entre prix et OB (jamais le SL entre les deux)\n- Mitigue = CLOTURE dedans (meche seule = PAS mitigue)\nSCORE provisoire : 0.25 a 1.00%`;
+    } else {
+      prompt=`ETAPE 3 — ORDER BLOCK + INDUCEMENT — ${ctx.pair} ${ctx.dir}\nOB TF : ${obTf} | Type : ${obType}\nContexte : ${state.aiResponses[2]?.slice(0,150)||'voir etapes'}\n\nLecture du trader : "${obs}"\n\nANALYSE OB + INDUCEMENT :\n- Verifie les 3 conditions OB (bon TF / cause BOS-CHoCH cloture / non-mitigue)\n- Verifie la presence du FVG et de l'inducement\n- Valide le score si conditions remplies\n- Corrige SEULEMENT si regle absolue violee\nSCORE provisoire : 0.25 a 1.00%`;
+    }
   } else if(step===4){
     const entry=parseFloat(document.getElementById('entry-price').value)||0;
     const sl=parseFloat(document.getElementById('sl-price').value)||0;
@@ -686,7 +1072,11 @@ async function analyzeStep(step){
     const risk=Math.abs(entry-sl);
     const rrr1=risk>0?(Math.abs(tp1-entry)/risk).toFixed(2):'?';
     const rrr2=risk>0&&tp2?(Math.abs(tp2-entry)/risk).toFixed(2):'?';
-    prompt=`VERDICT FINAL — ${ctx.pair} ${ctx.dir} — TF entree : ${state.entryTf}\n\nResume :\n- Weekly : ${state.aiResponses[1]?.slice(0,100)||'?'}\n- Daily : ${state.aiResponses[2]?.slice(0,100)||'?'}\n- OB/Inducement : ${state.aiResponses[3]?.slice(0,200)||'?'}\n\nEntree:${entry} SL:${sl} TP1:${tp1} TP2:${tp2}\nRRR TP1: 1:${rrr1} | RRR TP2: 1:${rrr2}\n\nL'utilisateur decrit l'entree ${state.entryTf} : "${obs}"\n\nVERDICT FINAL :\n1. Le CHoCH ${state.entryTf} est-il bien a l'interieur de la zone OB en CLOTURE ?\n2. Le SL est-il correctement place (pas entre prix et inducement) ?\n3. Le RRR est-il >= 1:2 sur TP1 ? (calcule : 1:${rrr1})\n4. SCORE FINAL : de 0.25% a 1.00%\n5. Commence par : VERDICT : TRADE [score X%] ou VERDICT : SKIP [raison] ou VERDICT : ATTENDRE [condition]\n6. Point le plus faible de ce setup`;
+    const modeLabel=tradingMode==='scalp'?'SCALP':tradingMode==='custom'?'CUSTOM':'TRADE';
+    const entryTfLabel=tradingMode==='scalp'?'M1 (LTF)':tradingMode==='custom'&&cTFs?cTFs.tf4+' (LTF)':state.entryTf;
+    const htfLabel=tradingMode==='scalp'?htf:tradingMode==='custom'&&cTFs?cTFs.tf1:(cfg.biais.split('/')[0].trim());
+    const mtfLabel=tradingMode==='scalp'?'M5':tradingMode==='custom'&&cTFs?cTFs.tf2:(cfg.structure.split('/')[0].trim());
+    prompt=`VERDICT FINAL — ${modeLabel} — ${ctx.pair} ${ctx.dir} — TF entree : ${entryTfLabel}\n\nResume :\n- Biais (${htfLabel}) : ${state.aiResponses[1]?.slice(0,100)||'?'}\n- Structure (${mtfLabel}) : ${state.aiResponses[2]?.slice(0,100)||'?'}\n- OB/Inducement : ${state.aiResponses[3]?.slice(0,150)||'?'}\n\nEntree:${entry} SL:${sl} TP1:${tp1} TP2:${tp2}\nRRR TP1: 1:${rrr1} | RRR TP2: 1:${rrr2}\n\nLecture entree ${entryTfLabel} : "${obs}"\n\nVERDICT FINAL :\n1. Le CHoCH ${entryTfLabel} est-il bien a l'interieur de la zone OB en CLOTURE ?\n2. Le SL est-il correctement place ?\n3. RRR >= 1:2 sur TP1 ? (calcule : 1:${rrr1})\n4. SCORE FINAL : 0.25% a 1.00%\n5. Commence par : VERDICT : TRADE [score] ou SKIP [raison] ou ATTENDRE [condition]`;
   }
 
   try{
@@ -957,10 +1347,10 @@ function updateWatchlistBadge(){
 
 function switchWatchlistTab(mode){
   watchlistModeFilter=mode;
-  const sw=document.getElementById('wl-tab-swing');
-  const dy=document.getElementById('wl-tab-day');
-  if(sw){sw.style.background=mode==='swing'?'#111':'transparent';sw.style.color=mode==='swing'?'#fff':'#6b7280';}
-  if(dy){dy.style.background=mode==='day'?'#111':'transparent';dy.style.color=mode==='day'?'#fff':'#6b7280';}
+  ['swing','day','scalp','custom'].forEach(function(m){
+    var el=document.getElementById('wl-tab-'+m);
+    if(el){el.style.background=mode===m?'#111':'transparent';el.style.color=mode===m?'#fff':'#6b7280';}
+  });
   renderWatchlist();
 }
 
@@ -1099,7 +1489,12 @@ function renderWRChart(){
 }
 
 // ═══ FOLLOW-UP MULTI-IMAGES ═══
-const TF_LABELS={1:{swing:'Weekly',day:'Daily/H4'},2:{swing:'Daily',day:'H1/M30'},3:{swing:'4H/H1',day:'M15/M5'},4:{swing:'M15/M5',day:'M5/M1'}};
+const TF_LABELS={
+  1:{swing:'Weekly',day:'Daily/H4',scalp:'M15 (HTF)'},
+  2:{swing:'Daily',day:'H1/M30',scalp:'M5 (MTF)'},
+  3:{swing:'4H/H1',day:'M15/M5',scalp:'M5 OB'},
+  4:{swing:'M15/M5',day:'M5/M1',scalp:'M1 (LTF)'}
+};
 
 function showFollowUp(step){
   var fc=document.getElementById('followups'+step);if(!fc)return;
@@ -1415,6 +1810,482 @@ let deferredPrompt;
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;document.getElementById('installBanner').classList.add('show');});
 document.getElementById('installBtn').addEventListener('click',async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();const{outcome}=await deferredPrompt.userChoice;if(outcome==='accepted')document.getElementById('installBanner').classList.remove('show');deferredPrompt=null;});
 window.addEventListener('appinstalled',()=>document.getElementById('installBanner').classList.remove('show'));
+
+// ═══ JOURNAL DASHBOARD BRIDGE ═══
+function openJournalDashboard(){
+  // Sync data: journal overlay reads from same sd_journal key
+  jrnl = JSON.parse(localStorage.getItem('sd_journal')||'[]');
+  document.getElementById('journal-overlay').classList.add('open');
+  document.body.style.overflow='hidden';
+  j_updateAll();
+}
+function closeJournalDashboard(){
+  document.getElementById('journal-overlay').classList.remove('open');
+  document.body.style.overflow='';
+  // Sync back: reload journal in case dashboard made changes
+  journal = JSON.parse(localStorage.getItem('sd_journal')||'[]');
+}
+
+// ═══ DATA ═══
+let jrnl = JSON.parse(localStorage.getItem('sd_journal') || '[]');
+let jSheetsUrl = localStorage.getItem('sd_sheets_url') || '';
+let jCurrentFilter = 'all';
+let jCharts = {};
+
+// ═══ INIT ═══
+window.addEventListener('load', () => {
+  if (jSheetsUrl) {
+    document.getElementById('sheets-url').value = jSheetsUrl;
+    j_setSheetsStatus(true);
+    document.getElementById('sync-btn').style.display = 'inline-flex';
+  }
+  j_updateAll();
+});
+
+function j_updateAll() {
+  j_updateBadges();
+  j_renderDashboard();
+  j_renderJournal();
+}
+
+// ═══ NAVIGATION ═══
+function j_showPage(id, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (el) el.classList.add('active');
+  if (id === 'stats') j_renderStats();
+  if (id === 'dashboard') j_renderDashboard();
+}
+
+function j_quickFilter(f) {
+  jCurrentFilter = f;
+  j_showPage('journal', null);
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  j_renderJournal();
+}
+
+// ═══ BADGES ═══
+function j_updateBadges() {
+  const trades = jrnl.filter(t => t.decision === 'trade');
+  const closed = trades.filter(t => t.result !== 'pending');
+  const wins = closed.filter(t => t.result === 'win');
+  document.getElementById('nb-total').textContent = jrnl.length;
+  document.getElementById('nb-win').textContent = wins.length;
+  document.getElementById('nb-aplus').textContent = jrnl.filter(t => parseFloat(t.score) >= 1.0).length;
+  document.getElementById('nb-pending').textContent = jrnl.filter(t => t.result === 'pending').length;
+}
+
+// ═══ DASHBOARD ═══
+function j_renderDashboard() {
+  const trades = jrnl.filter(t => t.decision === 'trade');
+  const closed = trades.filter(t => t.result !== 'pending');
+  const wins = closed.filter(t => t.result === 'win');
+  const rrs = closed.filter(t => t.rr).map(t => parseFloat(t.rr));
+  const avgRR = rrs.length ? (rrs.reduce((a,b)=>a+b,0)/rrs.length).toFixed(2) : '—';
+  const wr = closed.length ? Math.round(wins.length/closed.length*100)+'%' : '—';
+
+  document.getElementById('d-total').textContent = jrnl.length;
+  document.getElementById('d-wr').textContent = wr;
+  document.getElementById('d-wr-sub').textContent = closed.length + ' trades fermes';
+  document.getElementById('d-rr').textContent = avgRR === '—' ? '—' : avgRR + 'R';
+  document.getElementById('d-aplus').textContent = jrnl.filter(t=>parseFloat(t.score)>=1.0).length;
+  document.getElementById('d-pending').textContent = jrnl.filter(t=>t.result==='pending').length;
+
+  const now = new Date();
+  document.getElementById('dash-meta').textContent =
+    now.toLocaleDateString('fr-FR', {weekday:'long', day:'numeric', month:'long', year:'numeric'})
+    + ' · ' + jrnl.length + ' trades enregistres';
+
+  j_renderWRChart();
+  renderAdvStats();
+}
+
+function j_renderWRChart() {
+  const trades = jrnl.filter(t=>t.decision==='trade'&&t.result!=='pending').slice().reverse();
+  const canvas = document.getElementById('wrChart');
+  if (!canvas) return;
+  if (charts.wr) jCharts.wr.destroy();
+  if (trades.length < 2) {
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle = '#4a5268'; ctx.font = '12px DM Mono, monospace';
+    ctx.fillText('Ajoute des trades pour voir la courbe', 10, 50);
+    return;
+  }
+  const labels=[], dataWR=[], dataRR=[];
+  trades.forEach((t,i) => {
+    const sl = trades.slice(0,i+1);
+    const w = sl.filter(x=>x.result==='win').length;
+    const rrs = sl.filter(x=>x.rr).map(x=>parseFloat(x.rr));
+    labels.push(t.pair || ('#'+(i+1)));
+    dataWR.push(Math.round(w/sl.length*100));
+    dataRR.push(rrs.length ? (rrs.reduce((a,b)=>a+b,0)/rrs.length).toFixed(2) : null);
+  });
+  jCharts.wr = new Chart(canvas.getContext('2d'), {
+    type:'line',
+    data:{labels, datasets:[
+      {label:'Win Rate %', data:dataWR, borderColor:'#00d68f', backgroundColor:'rgba(0,214,143,0.06)',
+       tension:0.4, pointRadius:3, yAxisID:'y'},
+      {label:'R:R moyen', data:dataRR, borderColor:'#4d9eff', backgroundColor:'rgba(77,158,255,0.06)',
+       tension:0.4, pointRadius:3, yAxisID:'y2', borderDash:[4,3]},
+    ]},
+    options:{responsive:true, plugins:{legend:{labels:{color:'#8b92a5', font:{size:11, family:'DM Mono'}}}},
+      scales:{
+        y:{min:0, max:100, ticks:{color:'#4a5268', callback:v=>v+'%', font:{size:10}}, grid:{color:'#1e2530'}},
+        y2:{position:'right', min:0, ticks:{color:'#4a5268', callback:v=>v+'R', font:{size:10}}, grid:{display:false}},
+        x:{ticks:{color:'#4a5268', font:{size:9}, maxRotation:45}, grid:{color:'#1e2530'}},
+      }
+    }
+  });
+}
+
+function renderAdvStats() {
+  const closed = jrnl.filter(t=>t.decision==='trade'&&t.result!=='pending');
+  if (!closed.length) {
+    ['adv-pair','adv-session','adv-score','adv-mode'].forEach(id=>{
+      const el=document.getElementById(id);
+      if(el) el.innerHTML='<div style="font-size:11px;color:var(--text3);padding:8px 0">Pas encore de trades fermes</div>';
+    });
+    return;
+  }
+  function wr(arr){const w=arr.filter(t=>t.result==='win').length;return arr.length?Math.round(w/arr.length*100)+'% ('+w+'/'+arr.length+')':'—';}
+  function avgRR(arr){const r=arr.filter(t=>t.rr).map(t=>parseFloat(t.rr));return r.length?(r.reduce((a,b)=>a+b,0)/r.length).toFixed(2)+'R':'—';}
+  function rows(data){return Object.entries(data).filter(([,a])=>a.length).sort((a,b)=>b[1].length-a[1].length).map(([k,a])=>`<div class="adv-row"><span class="adv-row-label">${k}</span><span class="adv-row-val">${wr(a)} · ${avgRR(a)}</span></div>`).join('');}
+
+  const byPair={},bySession={},byScore={'0.25':[],'0.5':[],'0.75':[],'1.0':[]},byMode={reel:[],backtest:[]};
+  closed.forEach(t=>{
+    const p=t.pair||'?'; if(!byPair[p])byPair[p]=[]; byPair[p].push(t);
+    const s=t.session||'Autre'; if(!bySession[s])bySession[s]=[]; bySession[s].push(t);
+    const k=parseFloat(t.score)<=0.25?'0.25':parseFloat(t.score)<=0.5?'0.5':parseFloat(t.score)<=0.75?'0.75':'1.0';
+    byScore[k].push(t);
+    if(t.mode==='reel')byMode.reel.push(t); else byMode.backtest.push(t);
+  });
+  document.getElementById('adv-pair').innerHTML = rows(byPair);
+  document.getElementById('adv-session').innerHTML = rows(bySession);
+  const scoreLbl={'0.25':'OB seul','0.5':'+FVG','0.75':'+Ind.','1.0':'A+'};
+  document.getElementById('adv-score').innerHTML = Object.entries(byScore).filter(([,a])=>a.length).map(([k,a])=>`<div class="adv-row"><span class="adv-row-label">${k}% — ${scoreLbl[k]}</span><span class="adv-row-val">${wr(a)}</span></div>`).join('');
+  document.getElementById('adv-mode').innerHTML = `<div class="adv-row"><span class="adv-row-label">Reel</span><span class="adv-row-val">${wr(byMode.reel)} · ${avgRR(byMode.reel)}</span></div><div class="adv-row"><span class="adv-row-label">Backtest</span><span class="adv-row-val">${wr(byMode.backtest)} · ${avgRR(byMode.backtest)}</span></div>`;
+}
+
+// ═══ JOURNAL ═══
+function j_setFilter(f, btn) {
+  jCurrentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  j_renderJournal();
+}
+
+function j_renderJournal() {
+  let trades = journal;
+  if (currentFilter !== 'all') trades = jrnl.filter(t => {
+    if (currentFilter==='reel') return t.mode==='reel';
+    if (currentFilter==='backtest') return t.mode==='backtest';
+    if (currentFilter==='trade') return t.decision==='trade';
+    if (currentFilter==='skip') return t.decision==='skip';
+    if (currentFilter==='win') return t.result==='win';
+    if (currentFilter==='loss') return t.result==='loss';
+    if (currentFilter==='pending') return t.result==='pending';
+    if (currentFilter==='aplus') return parseFloat(t.score)>=1.0;
+    return true;
+  });
+
+  const tbody = document.getElementById('trade-tbody');
+  const empty = document.getElementById('journal-empty');
+
+  if (!trades.length) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  const sc = s => {
+    const v = (parseFloat(s)*100).toFixed(0)+'%';
+    const cls = parseFloat(s)>=1?'score-aplus':parseFloat(s)>=0.5?'score-good':'score-low';
+    return `<span class="score-cell ${cls}">${v}</span>`;
+  };
+  const res = r => {
+    const map = {win:'result-win',loss:'result-loss',be:'result-be',pending:'result-pending'};
+    const lbl = {win:'Win',loss:'Loss',be:'BE',pending:'En cours'};
+    return `<span class="result-badge ${map[r]||'result-skip'}">${lbl[r]||r}</span>`;
+  };
+
+  tbody.innerHTML = trades.map(t => {
+    const idx = jrnl.indexOf(t);
+    const rrClass = parseFloat(t.rr)>0?'rr-pos':parseFloat(t.rr)<0?'rr-neg':'';
+    return `
+    <tr onclick="j_toggleDetail(${idx})">
+      <td><div class="pair-cell">${t.pair||'—'} <span class="dir-badge ${t.dir==='BUY'?'dir-buy':'dir-sell'}">${t.dir||'—'}</span></div></td>
+      <td style="font-family:'DM Mono',monospace;font-size:11px">${t.date||'—'}</td>
+      <td><span class="mode-tag ${t.mode==='reel'?'mode-reel':'mode-backtest'}">${t.mode||'—'}</span></td>
+      <td>${sc(t.score||0)}</td>
+      <td style="font-size:12px">${t.session||'—'}</td>
+      <td><span class="result-badge ${t.decision==='trade'?'result-win':'result-skip'}">${t.decision==='trade'?'Trade':'Skip'}</span></td>
+      <td>${res(t.result||'pending')}</td>
+      <td><span class="rr-cell ${rrClass}">${t.rr?t.rr+'R':'—'}</span></td>
+      <td><button class="expand-btn">▾</button></td>
+    </tr>
+    <tr class="trade-detail-row" id="detail-${idx}">
+      <td colspan="9">
+        <div class="trade-detail-inner">
+          <div class="detail-grid">
+            <div class="detail-card">
+              <div class="detail-card-label">Analyse IA</div>
+              <div class="detail-card-val">${t.aiAnalysis?.entry||t.aiAnalysis?.ob||'Aucune analyse IA sauvegardee'}</div>
+            </div>
+            <div class="detail-card">
+              <div class="detail-card-label">Observation</div>
+              <div class="detail-card-val">${t.observations?.entry||'—'}</div>
+            </div>
+            <div class="detail-card">
+              <div class="detail-card-label">Prix · SL · TP</div>
+              <div class="detail-card-val">Entree : ${t.entryPrice||'—'}\nSL : ${t.sl||'—'}\nTP1 : ${t.tp1||'—'}\nTP2 : ${t.tp2||'—'}\nOB TF : ${t.obTf||'—'}</div>
+            </div>
+          </div>
+          <div class="detail-actions">
+            <select class="result-select" onchange="updateField(${idx},'result',this.value)" onclick="event.stopPropagation()">
+              <option ${t.result==='pending'?'selected':''} value="pending">En cours</option>
+              <option ${t.result==='win'?'selected':''} value="win">Win</option>
+              <option ${t.result==='loss'?'selected':''} value="loss">Loss</option>
+              <option ${t.result==='be'?'selected':''} value="be">Breakeven</option>
+            </select>
+            <input class="rr-input" type="number" value="${t.rr||''}" placeholder="R:R reel" step="0.1"
+              onchange="updateField(${idx},'rr',this.value)" onclick="event.stopPropagation()">
+            <button class="delete-btn" onclick="event.stopPropagation();j_deleteEntry(${idx})">Supprimer</button>
+          </div>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function j_toggleDetail(idx) {
+  const row = document.getElementById('detail-'+idx);
+  if (row) row.classList.toggle('show');
+}
+
+function updateField(idx, field, val) {
+  journal[idx][field] = val;
+  j_save();
+  j_updateBadges();
+  if (jSheetsUrl) j_syncSingleTrade(journal[idx]);
+}
+
+function j_deleteEntry(idx) {
+  if (!confirm('Supprimer ce trade ?')) return;
+  jrnl.splice(idx, 1);
+  j_save();
+  j_updateAll();
+}
+
+// ═══ ADD MANUAL ═══
+function j_addManualTrade() {
+  const pair = document.getElementById('jm-pair').value.trim();
+  if (!pair) { j_toast('Indique une paire', 'err'); return; }
+  const entry = {
+    id: Date.now(),
+    date: new Date().toISOString().slice(0,10),
+    pair,
+    mode: document.getElementById('jm-mode').value,
+    dir: document.getElementById('jm-dir').value,
+    session: document.getElementById('jm-session').value,
+    entryTf: document.getElementById('jm-tf').value,
+    decision: document.getElementById('jm-decision').value,
+    score: parseFloat(document.getElementById('jm-score').value),
+    result: document.getElementById('jm-result').value,
+    rr: document.getElementById('jm-rr').value || null,
+    aiAnalysis: { entry: '' }, observations: {}
+  };
+  jrnl.unshift(entry);
+  j_save();
+  j_updateAll();
+  document.getElementById('jm-pair').value = '';
+  document.getElementById('jm-rr').value = '';
+  j_toast('Trade ajouté ✓', 'ok');
+  if (jSheetsUrl) j_syncSingleTrade(entry);
+}
+
+// ═══ STATS ═══
+function j_renderStats() {
+  const closed = jrnl.filter(t=>t.decision==='trade'&&t.result!=='pending');
+  if (!closed.length) return;
+
+  const byPair={}, bySession={}, byScore={}, byScoreRR={};
+  closed.forEach(t=>{
+    const p=t.pair||'?'; if(!byPair[p])byPair[p]={w:0,t:0}; byPair[p].t++; if(t.result==='win')byPair[p].w++;
+    const s=t.session||'Autre'; if(!bySession[s])bySession[s]={w:0,t:0}; bySession[s].t++; if(t.result==='win')bySession[s].w++;
+    const k=(parseFloat(t.score)*100).toFixed(0)+'%'; if(!byScore[k])byScore[k]=0; byScore[k]++;
+    if(!byScoreRR[k])byScoreRR[k]=[]; if(t.rr)byScoreRR[k].push(parseFloat(t.rr));
+  });
+
+  const cOpts = {responsive:true, plugins:{legend:{display:false}}, scales:{
+    x:{ticks:{color:'#4a5268',font:{size:10}}, grid:{color:'#1e2530'}},
+    y:{ticks:{color:'#4a5268',font:{size:10}}, grid:{color:'#1e2530'}},
+  }};
+
+  if (charts.pair) jCharts.pair.destroy();
+  const pairs=Object.entries(byPair).sort((a,b)=>b[1].t-a[1].t).slice(0,8);
+  jCharts.pair = new Chart(document.getElementById('pairChart').getContext('2d'), {
+    type:'bar',
+    data:{labels:pairs.map(([k])=>k), datasets:[
+      {label:'Win Rate %', data:pairs.map(([,v])=>Math.round(v.w/v.t*100)),
+       backgroundColor:'rgba(0,214,143,0.7)', borderColor:'#00d68f', borderWidth:1}
+    ]},
+    options:{...cOpts, scales:{...cOpts.scales, y:{...cOpts.scales.y, max:100}}}
+  });
+
+  if (charts.score) jCharts.score.destroy();
+  const scores=Object.entries(byScore);
+  jCharts.score = new Chart(document.getElementById('scoreChart').getContext('2d'), {
+    type:'doughnut',
+    data:{labels:scores.map(([k])=>k), datasets:[{
+      data:scores.map(([,v])=>v),
+      backgroundColor:['rgba(74,82,104,0.8)','rgba(77,158,255,0.8)','rgba(255,179,71,0.8)','rgba(0,214,143,0.8)'],
+      borderColor:'#0a0c0f', borderWidth:2
+    }]},
+    options:{responsive:true, plugins:{legend:{labels:{color:'#8b92a5',font:{size:11}}}}}
+  });
+
+  if (charts.session) jCharts.session.destroy();
+  const sessions=Object.entries(bySession).sort((a,b)=>b[1].t-a[1].t);
+  jCharts.session = new Chart(document.getElementById('sessionChart').getContext('2d'), {
+    type:'bar',
+    data:{labels:sessions.map(([k])=>k), datasets:[
+      {label:'Win Rate %', data:sessions.map(([,v])=>Math.round(v.w/v.t*100)),
+       backgroundColor:'rgba(77,158,255,0.7)', borderColor:'#4d9eff', borderWidth:1}
+    ]},
+    options:{...cOpts, scales:{...cOpts.scales, y:{...cOpts.scales.y, max:100}}}
+  });
+
+  if (charts.rr) jCharts.rr.destroy();
+  const rrData=Object.entries(byScoreRR).filter(([,a])=>a.length).map(([k,a])=>({k, v:(a.reduce((x,y)=>x+y,0)/a.length).toFixed(2)}));
+  jCharts.rr = new Chart(document.getElementById('rrChart').getContext('2d'), {
+    type:'bar',
+    data:{labels:rrData.map(d=>d.k), datasets:[
+      {label:'R:R moyen', data:rrData.map(d=>d.v),
+       backgroundColor:'rgba(255,179,71,0.7)', borderColor:'#ffb347', borderWidth:1}
+    ]},
+    options:cOpts
+  });
+}
+
+// ═══ SHEETS ═══
+function j_saveSheetUrl() {
+  const url = document.getElementById('sheets-url').value.trim();
+  if (!url.startsWith('https://')) { j_toast('URL invalide', 'err'); return; }
+  jSheetsUrl = url;
+  localStorage.setItem('sd_sheets_url', url);
+  document.getElementById('url-display').textContent = url;
+  j_setSheetsStatus(true);
+  document.getElementById('sync-btn').style.display = 'inline-flex';
+  j_toast('URL sauvegardée ✓', 'ok');
+}
+
+async function j_testSheets() {
+  if (!jSheetsUrl) { j_toast('Aucune URL configurée', 'err'); return; }
+  try {
+    const r = await fetch(jSheetsUrl + '?test=1');
+    const d = await r.json();
+    if (d.status) { j_toast('Connexion OK ✓', 'ok'); j_setSheetsStatus(true); }
+    else j_toast('Erreur : ' + JSON.stringify(d), 'err');
+  } catch(e) { j_toast('Erreur connexion : ' + e.message, 'err'); }
+}
+
+async function j_syncToSheets() {
+  if (!jSheetsUrl) { j_toast('Configure Google Sheets d\'abord', 'err'); return; }
+  const btn = document.getElementById('sync-btn');
+  btn.textContent = 'Sync...';
+  try {
+    const r = await fetch(jSheetsUrl, {
+      method:'POST', mode:'no-cors',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({action:'sync_all', trades:journal})
+    });
+    j_toast('Synchronise ' + jrnl.length + ' trades ✓', 'ok');
+  } catch(e) { j_toast('Erreur sync : ' + e.message, 'err'); }
+  btn.textContent = '⟳ Sync Google Sheets';
+}
+
+async function j_syncSingleTrade(trade) {
+  if (!jSheetsUrl) return;
+  try {
+    await fetch(jSheetsUrl, {
+      method:'POST', mode:'no-cors',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({action:'add_trade', trade})
+    });
+  } catch(e) {}
+}
+
+function j_setSheetsStatus(ok) {
+  document.getElementById('sheets-dot').className = 'status-dot ' + (ok?'ok':'no');
+  document.getElementById('sheets-label').textContent = ok ? 'Sheets connecte' : 'Sheets non connecte';
+  document.getElementById('sheets-label').style.color = ok ? 'var(--green)' : 'var(--text3)';
+}
+
+function j_copyUrl() {
+  const txt = document.getElementById('url-display').textContent;
+  navigator.clipboard.writeText(txt).then(()=>j_toast('URL copiée ✓','ok'));
+}
+
+// ═══ IMPORT / EXPORT ═══
+function j_exportJSON() {
+  const blob = new Blob([JSON.stringify(journal,null,2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url;
+  a.download='sd_journal_'+new Date().toISOString().slice(0,10)+'.json';
+  a.click(); URL.revokeObjectURL(url);
+}
+
+function j_exportCSV() {
+  if (!journal.length) { j_toast('Journal vide', 'err'); return; }
+  const h = ['Date','Paire','Mode','Direction','TF','Score%','Decision','Resultat','RR','Session'];
+  const rows = jrnl.map(t=>[t.date||'',t.pair||'',t.mode||'',t.dir||'',t.entryTf||'',((parseFloat(t.score)||0)*100).toFixed(0)+'%',t.decision||'',t.result||'',t.rr||'',t.session||'']);
+  const csv = [h.join(','),...rows.map(r=>r.join(','))].join('\n');
+  const blob = new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url;
+  a.download='sd_journal_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click(); URL.revokeObjectURL(url);
+}
+
+function j_importJSON(input) {
+  const file = input.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if(!Array.isArray(data)) { j_toast('Fichier invalide', 'err'); return; }
+      if(!confirm('Importer '+data.length+' trades ? Le journal actuel sera remplace.')) return;
+      jrnl = data; j_save(); j_updateAll();
+      j_toast('Import reussi — '+data.length+' trades ✓','ok');
+    } catch(err) { j_toast('Erreur JSON : '+err.message, 'err'); }
+  };
+  reader.readAsText(file);
+  input.value='';
+}
+
+function j_clearAll() {
+  if(!confirm('Effacer tout le journal ? Action irreversible.')) return;
+  journal=[]; j_save(); j_updateAll(); j_toast('Journal efface','ok');
+}
+
+// ═══ UTILS ═══
+function j_save() {
+  localStorage.setItem('sd_journal', JSON.stringify(jrnl));
+}
+
+let jToastTimer;
+function j_toast(msg, type='ok') {
+  const el = document.getElementById('j-toast');
+  el.textContent = msg;
+  el.className = 'toast show ' + type;
+  clearTimeout(toastTimer);
+  jToastTimer = setTimeout(()=>el.classList.remove('show'), 3000);
+}
+
 </script>
 
 <!-- POST-TRADE REVIEW MODAL -->
@@ -1433,5 +2304,302 @@ window.addEventListener('appinstalled',()=>document.getElementById('installBanne
   </div>
 </div>
 
+
+
+<!-- ═══ JOURNAL DASHBOARD OVERLAY ═══ -->
+<div id="journal-overlay" class="journal-overlay">
+  <button onclick="closeJournalDashboard()" style="position:fixed;top:16px;right:16px;z-index:600;padding:8px 18px;background:#00d68f;color:#0a0c0f;border:none;border-radius:8px;font-weight:700;font-size:13px;cursor:pointer;font-family:system-ui">← Retour a l'analyse</button>
+  <div class="shell">
+
+<!-- ══ SIDEBAR ══ -->
+<div class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-mark">XAUMITRI</div>
+    <div class="logo-sub">Journal S&amp;D · ICT · SMC</div>
+  </div>
+  <div class="sidebar-nav">
+    <div class="nav-section">Trading</div>
+    <a class="nav-item active" onclick="j_showPage(&#39;dashboard&#39;,this)">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="6" height="6" rx="1"></rect><rect x="9" y="1" width="6" height="6" rx="1"></rect><rect x="1" y="9" width="6" height="6" rx="1"></rect><rect x="9" y="9" width="6" height="6" rx="1"></rect></svg>
+      Dashboard
+      <span class="nav-badge" id="nb-total">0</span>
+    </a>
+    <a class="nav-item" onclick="j_showPage(&#39;journal&#39;,this)">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h8M2 12h10"></path></svg>
+      Tous les trades
+    </a>
+    <a class="nav-item" onclick="j_showPage(&#39;stats&#39;,this)">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12l3-4 3 2 3-6 3 3"></path></svg>
+      Statistiques
+    </a>
+
+    <div class="nav-section">Filtres rapides</div>
+    <a class="nav-item" onclick="j_quickFilter(&#39;win&#39;)">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8l3 3 7-7"></path></svg>
+      Wins
+      <span class="nav-badge" id="nb-win">0</span>
+    </a>
+    <a class="nav-item" onclick="j_quickFilter(&#39;aplus&#39;)">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2l1.5 4.5H14l-3.7 2.7 1.4 4.3L8 11l-3.7 2.5 1.4-4.3L2 6.5h4.5z"></path></svg>
+      Setups A+
+      <span class="nav-badge" id="nb-aplus">0</span>
+    </a>
+    <a class="nav-item" onclick="j_quickFilter(&#39;pending&#39;)">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"></circle><path d="M8 5v3.5l2 2"></path></svg>
+      En cours
+      <span class="nav-badge" id="nb-pending">0</span>
+    </a>
+
+    <div class="nav-section">Config</div>
+    <a class="nav-item" onclick="j_showPage(&#39;config&#39;,this)">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="3"></circle><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.3 3.3l1.4 1.4M11.3 11.3l1.4 1.4M3.3 12.7l1.4-1.4M11.3 4.7l1.4-1.4"></path></svg>
+      Configuration
+    </a>
+  </div>
+  <div class="sidebar-bottom">
+    <div class="sheets-status">
+      <div class="status-dot" id="sheets-dot"></div>
+      <span id="sheets-label" style="color:var(--text3)">Sheets non connecte</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MAIN ══ -->
+<div class="main">
+
+<!-- ── DASHBOARD ── -->
+<div class="page active" id="page-dashboard">
+  <div class="page-header">
+    <div class="page-title">Dashboard</div>
+    <div class="page-meta" id="dash-meta">mardi 31 mars 2026 · 0 trades enregistres</div>
+  </div>
+  <div class="stats-row">
+    <div class="stat"><div class="stat-label">Total trades</div><div class="stat-val" id="d-total">0</div><div class="stat-sub">Analyses enregistrees</div></div>
+    <div class="stat green"><div class="stat-label">Win rate</div><div class="stat-val" id="d-wr">—</div><div class="stat-sub" id="d-wr-sub">0 trades fermes</div></div>
+    <div class="stat amber"><div class="stat-label">R:R moyen</div><div class="stat-val" id="d-rr">—</div><div class="stat-sub">tous trades fermes</div></div>
+    <div class="stat"><div class="stat-label">Setups A+</div><div class="stat-val" id="d-aplus">0</div><div class="stat-sub">score 1.00%</div></div>
+    <div class="stat"><div class="stat-label">En cours</div><div class="stat-val" id="d-pending">0</div><div class="stat-sub">positions ouvertes</div></div>
+  </div>
+  <div class="chart-section">
+    <div class="chart-title">Evolution win rate</div>
+    <canvas id="wrChart" height="90"></canvas>
+  </div>
+  <div class="adv-grid">
+    <div class="adv-card">
+      <div class="adv-card-title">Win rate par paire</div>
+      <div id="adv-pair"><div style="font-size:11px;color:var(--text3);padding:8px 0">Pas encore de trades fermes</div></div>
+    </div>
+    <div class="adv-card">
+      <div class="adv-card-title">Win rate par session</div>
+      <div id="adv-session"><div style="font-size:11px;color:var(--text3);padding:8px 0">Pas encore de trades fermes</div></div>
+    </div>
+    <div class="adv-card">
+      <div class="adv-card-title">Win rate par scoring</div>
+      <div id="adv-score"><div style="font-size:11px;color:var(--text3);padding:8px 0">Pas encore de trades fermes</div></div>
+    </div>
+    <div class="adv-card">
+      <div class="adv-card-title">Reel vs Backtest</div>
+      <div id="adv-mode"><div style="font-size:11px;color:var(--text3);padding:8px 0">Pas encore de trades fermes</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── JOURNAL ── -->
+<div class="page" id="page-journal">
+  <div class="page-header">
+    <div class="page-title">Journal de trading</div>
+    <div class="page-meta">Tous tes trades · Filtre, modifie, analyse</div>
+  </div>
+
+  <div class="setup-bar">
+    <div class="setup-bar-title">Ajouter un trade manuellement</div>
+    <div class="setup-fields">
+      <div class="setup-field">
+        <label>Paire</label>
+        <input type="text" id="jm-pair" placeholder="GBPUSD, XAUUSD...">
+      </div>
+      <div class="setup-field">
+        <label>Direction</label>
+        <select id="jm-dir"><option value="BUY">BUY</option><option value="SELL">SELL</option></select>
+      </div>
+      <div class="setup-field">
+        <label>Mode</label>
+        <select id="jm-mode"><option value="reel">Reel</option><option value="backtest">Backtest</option></select>
+      </div>
+      <div class="setup-field">
+        <label>TF entree</label>
+        <select id="jm-tf"><option>M15</option><option>M5</option><option>M1</option></select>
+      </div>
+      <div class="setup-field">
+        <label>Score</label>
+        <select id="jm-score">
+          <option value="0.25">0.25% — OB seul</option>
+          <option value="0.5">0.50% — + FVG</option>
+          <option value="0.75">0.75% — + Inducement</option>
+          <option value="1.0">1.00% — A+ Fibo</option>
+        </select>
+      </div>
+      <div class="setup-field">
+        <label>Resultat</label>
+        <select id="jm-result">
+          <option value="pending">En cours</option>
+          <option value="win">Win</option>
+          <option value="loss">Loss</option>
+          <option value="be">Breakeven</option>
+        </select>
+      </div>
+      <div class="setup-field">
+        <label>R:R obtenu</label>
+        <input type="number" id="jm-rr" placeholder="2.5" step="0.1">
+      </div>
+      <div class="setup-field">
+        <label>Session</label>
+        <select id="jm-session">
+          <option>Londres</option><option>New York</option><option>Overlap</option><option>Asie</option>
+        </select>
+      </div>
+      <div class="setup-field">
+        <label>Decision</label>
+        <select id="jm-decision"><option value="trade">Trade pris</option><option value="skip">Skip</option></select>
+      </div>
+    </div>
+    <div style="margin-top:12px;display:flex;gap:8px">
+      <button class="btn-sm primary" onclick="j_addManualTrade()">+ Ajouter au journal</button>
+      <button class="btn-sm" onclick="j_exportCSV()">↓ Export CSV</button>
+      <button class="btn-sm" onclick="j_exportJSON()">↓ Export JSON</button>
+      <label class="btn-sm" style="cursor:pointer"><input type="file" accept=".json" onchange="importJSON(this)" style="display:none">↑ Import JSON</label>
+      <button class="btn-sm" onclick="j_syncToSheets()" id="sync-btn" style="display:none">⟳ Sync Google Sheets</button>
+    </div>
+  </div>
+
+  <div class="filters">
+    <button class="filter-btn active" onclick="j_setFilter(&#39;all&#39;,this)">Tous</button>
+    <button class="filter-btn" onclick="j_setFilter(&#39;reel&#39;,this)">Reel</button>
+    <button class="filter-btn" onclick="j_setFilter(&#39;backtest&#39;,this)">Backtest</button>
+    <button class="filter-btn" onclick="j_setFilter(&#39;trade&#39;,this)">Trades pris</button>
+    <button class="filter-btn" onclick="j_setFilter(&#39;skip&#39;,this)">Skips</button>
+    <button class="filter-btn" onclick="j_setFilter(&#39;win&#39;,this)">Wins</button>
+    <button class="filter-btn" onclick="j_setFilter(&#39;loss&#39;,this)">Losses</button>
+    <button class="filter-btn" onclick="j_setFilter(&#39;pending&#39;,this)">En cours</button>
+    <div class="filters-right">
+      <button class="btn-sm" style="color:var(--red);border-color:var(--red-bd)" onclick="j_clearAll()">Tout effacer</button>
+    </div>
+  </div>
+
+  <table class="trade-table">
+    <thead>
+      <tr>
+        <th>Paire</th>
+        <th>Date</th>
+        <th>Mode</th>
+        <th>Score</th>
+        <th>Session</th>
+        <th>Decision</th>
+        <th>Resultat</th>
+        <th>R:R</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody id="trade-tbody"></tbody>
+  </table>
+  <div id="journal-empty" class="empty" style="display: block;">
+    <div class="empty-icon">📋</div>
+    <div class="empty-text">Aucun trade dans le journal</div>
+    <div class="empty-sub">Lance une analyse sur le site principal ou ajoute un trade manuellement</div>
+  </div>
+</div>
+
+<!-- ── STATS ── -->
+<div class="page" id="page-stats">
+  <div class="page-header">
+    <div class="page-title">Statistiques avancees</div>
+    <div class="page-meta">Analyse detaillee de tes performances</div>
+  </div>
+  <div class="charts-grid" style="margin-bottom:20px">
+    <div class="chart-box">
+      <div class="chart-title">Win rate par paire</div>
+      <canvas id="pairChart" height="200"></canvas>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">Distribution des scores</div>
+      <canvas id="scoreChart" height="200"></canvas>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">Win rate par session</div>
+      <canvas id="sessionChart" height="200"></canvas>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">R:R moyen par scoring</div>
+      <canvas id="rrChart" height="200"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- ── CONFIG ── -->
+<div class="page" id="page-config">
+  <div class="page-header">
+    <div class="page-title">Configuration</div>
+    <div class="page-meta">Connexion Google Sheets · Sauvegarde · Import</div>
+  </div>
+
+  <div class="config-box">
+    <div class="config-title">🔗 Connexion Google Sheets</div>
+    <div class="config-sub">Synchronise ton journal automatiquement avec Google Sheets. Accessible partout, sur tous tes appareils.</div>
+    <div class="config-input-row">
+      <input class="config-input" type="text" id="sheets-url" placeholder="https://script.google.com/macros/s/XXXXX/exec">
+      <button class="btn-sm primary" onclick="j_saveSheetUrl()">Sauvegarder</button>
+      <button class="btn-sm" onclick="j_testSheets()">Tester</button>
+    </div>
+    <div class="config-steps">
+      <div class="config-step">
+        <div class="step-num">1</div>
+        <div class="step-text">
+          Ouvre <strong>Google Sheets</strong> → cree une feuille "SD Journal Trading"<br>
+          Puis <strong>Extensions → Apps Script</strong>
+        </div>
+      </div>
+      <div class="config-step">
+        <div class="step-num">2</div>
+        <div class="step-text">
+          Colle le code du fichier <strong>apps_script.gs</strong> et clique <strong>Enregistrer</strong>
+        </div>
+      </div>
+      <div class="config-step">
+        <div class="step-num">3</div>
+        <div class="step-text">
+          Clique <strong>Deployer → Nouveau deploiement → Application Web</strong><br>
+          Acces : <em>"Tout le monde"</em> → Deployer → Copie l'URL
+          <div class="step-code" onclick="j_copyUrl()" id="url-display">URL apparaitra ici apres sauvegarde</div>
+        </div>
+      </div>
+      <div class="config-step">
+        <div class="step-num">4</div>
+        <div class="step-text">
+          Colle l'URL ci-dessus et clique <strong>Sauvegarder</strong>.<br>
+          Ton journal se synchronisera automatiquement a chaque trade.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="config-box">
+    <div class="config-title">💾 Import depuis l'outil principal</div>
+    <div class="config-sub">Exporte le JSON depuis l'outil Avocat du Diable et importe-le ici pour tout retrouver.</div>
+    <div style="display:flex;gap:8px;margin-top:4px">
+      <label class="btn-sm primary" style="cursor:pointer"><input type="file" accept=".json" onchange="importJSON(this)" style="display:none">↑ Importer un JSON</label>
+      <button class="btn-sm" onclick="j_exportJSON()">↓ Exporter JSON</button>
+    </div>
+  </div>
+
+  <div class="config-box">
+    <div class="config-title" style="color:var(--red)">⚠ Zone dangereuse</div>
+    <div class="config-sub">Ces actions sont irreversibles.</div>
+    <button class="btn-sm" style="color:var(--red);border-color:var(--red-bd);background:var(--red-bg)" onclick="j_clearAll()">Effacer tout le journal</button>
+  </div>
+</div>
+
+</div><!-- /main -->
+</div><!-- /shell -->
+</div>
 
 </body></html>
